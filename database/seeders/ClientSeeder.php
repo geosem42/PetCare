@@ -4,8 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use App\Models\Client;
 
 class ClientSeeder extends Seeder
 {
@@ -17,12 +16,9 @@ class ClientSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < 55; $i++) {
-            $name = $faker->name;
-            $slug = Str::slug($name, '-');
-
-            DB::table('clients')->insert([
-                'name' => $name,
-                'slug' => $slug,
+    
+            Client::create([
+                'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
                 'phone_number' => $faker->phoneNumber,
                 'address' => $faker->address,

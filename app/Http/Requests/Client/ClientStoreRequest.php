@@ -25,9 +25,8 @@ class ClientStoreRequest extends FormRequest
         return [
 			'name' => ['required', 'string', 'max:255'],
 			'email' => ['required', 'email', 'max:255'],
-			'phone_number' => ['nullable', 'integer'],
+			'phone_number' => ['required', 'integer'],
 			'address' => ['nullable', 'string'],
-			'password' => ['required', 'string', 'min:8'],
 			'notes' => ['nullable', 'string']
 		];
     }

@@ -5,6 +5,7 @@ import { PlusSmallIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/
 import Pagination from '@/Components/Pagination.vue'
 import SearchTable from '@/Components/SearchTable.vue'
 import Swal from "sweetalert2";
+import { Link } from '@inertiajs/vue3';
 import { initFlowbite } from 'flowbite'
 
 onMounted(() => {
@@ -144,10 +145,10 @@ const handleBulkDelete = () => {
                                 <TrashIcon class="w-5 h-5" />
                             </button>
 
-                            <button type="button"
+                            <Link :href="route('clients.create')"
                                 class="flex items-center justify-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800">
                                 <PlusSmallIcon class="w-5 h-5 -ml-1 mr-2" /> New Client
-                            </button>
+                            </Link>
                         </div>
                     </div>
                     <div class="overflow-x-auto h-[600px]">

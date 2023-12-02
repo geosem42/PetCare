@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Str;
 
 class Client extends Model
 {
@@ -17,4 +19,18 @@ class Client extends Model
         'address',
         'notes',
     ];
+
+    protected function performInsert(Builder $query)
+    {
+        $this->slug = Str::slug($this->name) . '-temp';
+        parent::performInsert($query);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($client) {
+            $client->slug = Str::slug($client->name) . '-' . $client->id;
+            $client->save();
+        });
+    }
 }
