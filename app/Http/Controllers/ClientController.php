@@ -65,7 +65,7 @@ class ClientController extends Controller
     public function bulkDelete(ClientBulkDeleteRequest $request): JsonResponse
     {
         $this->clientService->bulkDeleteClients($request->validated()['selectedIds']);
-        return response()->json(['success' => 'Selected clients deleted successfully'], 201);
+        return response()->json(['message' => 'Selected clients deleted successfully'], 201);
     }
 
     public function fetchAllClients(ClientFetchAllRequest $request): JsonResponse

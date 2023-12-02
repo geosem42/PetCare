@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { PlusSmallIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import Pagination from '@/Components/Pagination.vue'
 import SearchTable from '@/Components/SearchTable.vue'
+import Swal from "sweetalert2";
 import { initFlowbite } from 'flowbite'
 
 onMounted(() => {
@@ -14,6 +15,9 @@ onMounted(() => {
 const meta = ref({})
 const clients = ref([])
 const isLoading = ref(false)
+const selectedClientIds = ref([])
+const selectAll = ref(false)
+const anyCheckboxSelected = ref(false)
 
 const fetchClients = async (page = 1) => {
     isLoading.value = true
@@ -29,7 +33,57 @@ const handleSearch = async (searchFunction) => {
 const handleClear = () => {
     fetchClients();
 }
+watch(selectAll, (newVal) => {
+	clients.value.forEach(client => {
+		if (!client.hasOwnProperty('selected')) {
+			client.selected = false;
+		}
 
+		if (client.selected !== newVal) {
+			client.selected = newVal;
+			togglePetSelection(client.id);
+		}
+	});
+});
+const togglePetSelection = (ClientId) => {
+	if (selectedClientIds.value.includes(ClientId)) {
+		selectedClientIds.value = selectedClientIds.value.filter(id => id !== ClientId);
+	} else {
+		selectedClientIds.value.push(ClientId);
+	}
+
+	anyCheckboxSelected.value = selectedClientIds.value.length > 0;
+};
+
+const handleBulkDelete = () => {
+	if (selectedClientIds.value.length > 0) {
+		Swal.fire({
+			title: 'Delete Selected Clients?',
+			text: `You have selected ${selectedClientIds.value.length} client(s). Do you want to continue?`,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes, delete them',
+			cancelButtonText: 'No, keep them'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				axios.delete('/clients/bulk-delete/selected', { data: { selectedIds: selectedClientIds.value } })
+                .then((response) => {
+                    Swal.fire('Deleted!', response.data.message, 'success')
+                    selectedClientIds.value = []
+                    anyCheckboxSelected.value = false
+                    fetchClients()
+                    nextTick(() => {
+                        selectAll.value = false;
+                    });
+                })
+                .catch((error) => {
+                    Swal.fire('Error!', error.response.data.message, 'error')
+                    console.error('Error:', error);
+                });
+			}
+		});
+	}
+};
 </script>
 
 <template>
@@ -61,8 +115,12 @@ const handleClear = () => {
                                 </div>
                             </form>
                         </div>
-                        <div
-                            class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                        <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                            <button @click="handleBulkDelete" v-show="anyCheckboxSelected" type="button" id="deleteSelected"
+								class="flex items-center justify-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+								<TrashIcon class="w-5 h-5" />
+							</button>
+
                             <button type="button"
                                 class="flex items-center justify-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800">
                                 <PlusSmallIcon class="w-5 h-5 -ml-1 mr-2" /> New Client
@@ -73,6 +131,13 @@ const handleClear = () => {
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-400 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
+                                    <th scope="col" class="px-4 py-3 w-[5%]">
+                                        <div class="flex items-center">
+                                            <input v-model="selectAll" id="checkbox-all" type="checkbox" 
+                                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="checkbox-all" class="sr-only">checkbox</label>
+                                        </div>
+                                    </th>
                                     <th scope="col" class="px-4 py-3 w-[20%]">Name</th>
                                     <th scope="col" class="px-4 py-3 w-[20%]">Email</th>
                                     <th scope="col" class="px-4 py-3 w-[20%]">Phone Number</th>
@@ -109,10 +174,18 @@ const handleClear = () => {
                                     <td colspan="5" class="text-center font-semibold pt-10">No results found.</td>
                                 </tr>
                                 <tr v-for="client in clients" :key="client.id" class="border-b dark:border-gray-700">
-                                    <th scope="row"
+                                    <th scope="row" class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <input v-model="client.selected" :id="'checkbox-' + client.id" 
+                                            @click="togglePetSelection(client.id)" type="checkbox" 
+                                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="checkbox-table-1" class="sr-only">checkbox</label>
+                                        </div>
+                                    </th>
+                                    <td 
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ client.name }}
-                                    </th>
+                                    </td>
                                     <td class="px-4 py-3">{{ client.email }}</td>
                                     <td class="px-4 py-3">{{ client.phone_number }}</td>
                                     <td class="px-4 py-3">{{ client.address }}</td>
