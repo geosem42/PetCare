@@ -29,12 +29,6 @@ const submitForm = handleSubmit(async values => {
   toast.success(response.data.message)
 });
 
-/* const submitForm = async () => {
-  const response = await axios.post('/clients/store', createForm.value)
-  resetForm()
-  toast.success(response.data.message)
-} */
-
 </script>
 
 <template>
