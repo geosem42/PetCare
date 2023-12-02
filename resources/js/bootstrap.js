@@ -5,9 +5,31 @@
  */
 
 import axios from 'axios';
-window.axios = axios;
+import { useToast } from "vue-toastification";
 
+window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+const toast = useToast();
+
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    let errorMessage = 'An error occurred'
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      errorMessage = error.response.data.message;
+    } else if (error.request) {
+      // The request was made but no response was received
+      errorMessage = 'No response received from server';
+    }
+    toast.error(errorMessage)
+    return Promise.reject(error)
+  }
+)
+
+
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

@@ -32,6 +32,7 @@ Route::middleware([
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+    Route::get('/clients/fetchAllClients', [ClientController::class, 'fetchAllClients'])->name('clients.fetchAll');
 
     Route::get('/pets', [PetController::class, 'index'])->name('pets');
 
