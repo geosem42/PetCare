@@ -69,7 +69,7 @@ const handleClear = () => {
                             </button>
                         </div>
                     </div>
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto h-[600px]">
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-400 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -83,7 +83,7 @@ const handleClear = () => {
                                 </tr>
                             </thead>
 
-                            <tbody v-if="isLoading" class="w-full table-body">
+                            <tbody v-if="isLoading" class="w-full">
                                 <tr>
                                     <td colspan="5">
                                         <div role="status" class="flex items-center justify-center">
@@ -104,7 +104,10 @@ const handleClear = () => {
                                 </tr>
                             </tbody>
 
-                            <tbody v-else class="table-body">
+                            <tbody v-else>
+                                <tr v-if="clients.length === 0">
+                                    <td colspan="5" class="text-center font-semibold pt-10">No results found.</td>
+                                </tr>
                                 <tr v-for="client in clients" :key="client.id" class="border-b dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -143,11 +146,3 @@ const handleClear = () => {
         </section>
     </AppLayout>
 </template>
-
-<style scoped>
-.table-body-content {
-  min-height: 500px;
-  display: flex;
-  align-items: center;
-}
-</style>
