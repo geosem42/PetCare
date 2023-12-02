@@ -33,6 +33,7 @@ Route::middleware([
 
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
     Route::get('/clients/fetchAllClients', [ClientController::class, 'fetchAllClients'])->name('clients.fetchAll');
+    Route::post('/clients/search', [ClientController::class, 'search'])->name('clients.search');
 
     Route::get('/pets', [PetController::class, 'index'])->name('pets');
 

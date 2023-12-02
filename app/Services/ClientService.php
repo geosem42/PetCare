@@ -30,13 +30,6 @@ class ClientService
     Client::destroy($ids);
   }
 
-  public function fetchClientById($id)
-  {
-      $client = Client::findOrFail($id);
-
-      return $client;
-  }
-
   public function fetchAllClients($page)
   {
     $perPage = 10;
