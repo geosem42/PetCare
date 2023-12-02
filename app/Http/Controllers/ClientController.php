@@ -59,7 +59,7 @@ class ClientController extends Controller
     public function destroy($id): JsonResponse
     {
         $this->clientService->destroyClient($id);
-        return response()->json(['success' => 'Client deleted successfully'], 201);
+        return response()->json(['message' => 'Client deleted successfully'], 201);
     }
 
     public function bulkDelete(ClientBulkDeleteRequest $request): JsonResponse

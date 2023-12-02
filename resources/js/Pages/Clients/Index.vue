@@ -34,55 +34,77 @@ const handleClear = () => {
     fetchClients();
 }
 watch(selectAll, (newVal) => {
-	clients.value.forEach(client => {
-		if (!client.hasOwnProperty('selected')) {
-			client.selected = false;
-		}
+    clients.value.forEach(client => {
+        if (!client.hasOwnProperty('selected')) {
+            client.selected = false;
+        }
 
-		if (client.selected !== newVal) {
-			client.selected = newVal;
-			togglePetSelection(client.id);
-		}
-	});
+        if (client.selected !== newVal) {
+            client.selected = newVal;
+            togglePetSelection(client.id);
+        }
+    });
 });
 const togglePetSelection = (ClientId) => {
-	if (selectedClientIds.value.includes(ClientId)) {
-		selectedClientIds.value = selectedClientIds.value.filter(id => id !== ClientId);
-	} else {
-		selectedClientIds.value.push(ClientId);
-	}
+    if (selectedClientIds.value.includes(ClientId)) {
+        selectedClientIds.value = selectedClientIds.value.filter(id => id !== ClientId);
+    } else {
+        selectedClientIds.value.push(ClientId);
+    }
 
-	anyCheckboxSelected.value = selectedClientIds.value.length > 0;
+    anyCheckboxSelected.value = selectedClientIds.value.length > 0;
 };
 
-const handleBulkDelete = () => {
-	if (selectedClientIds.value.length > 0) {
-		Swal.fire({
-			title: 'Delete Selected Clients?',
-			text: `You have selected ${selectedClientIds.value.length} client(s). Do you want to continue?`,
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Yes, delete them',
-			cancelButtonText: 'No, keep them'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				axios.delete('/clients/bulk-delete/selected', { data: { selectedIds: selectedClientIds.value } })
-                .then((response) => {
-                    Swal.fire('Deleted!', response.data.message, 'success')
-                    selectedClientIds.value = []
-                    anyCheckboxSelected.value = false
-                    fetchClients()
-                    nextTick(() => {
-                        selectAll.value = false;
-                    });
+const deleteClient = (id) => {
+    Swal.fire({
+        title: 'Delete Client?',
+        text: 'Are you sure you want to delete this client?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'No, keep it'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.delete(`/clients/${id}`)
+                .then(response => {
+                    Swal.fire('Deleted!', response.data.message, 'success');
+                    fetchClients();
                 })
-                .catch((error) => {
-                    Swal.fire('Error!', error.response.data.message, 'error')
-                    console.error('Error:', error);
+                .catch(error => {
+                    Swal.fire('Error!', error.response.data.message, 'error');
                 });
-			}
-		});
-	}
+        }
+    });
+}
+
+const handleBulkDelete = () => {
+    if (selectedClientIds.value.length > 0) {
+        Swal.fire({
+            title: 'Delete Selected Clients?',
+            text: `You have selected ${selectedClientIds.value.length} client(s). Do you want to continue?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete them',
+            cancelButtonText: 'No, keep them'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete('/clients/bulk-delete/selected', { data: { selectedIds: selectedClientIds.value } })
+                    .then((response) => {
+                        Swal.fire('Deleted!', response.data.message, 'success')
+                        selectedClientIds.value = []
+                        anyCheckboxSelected.value = false
+                        fetchClients()
+                        nextTick(() => {
+                            selectAll.value = false;
+                        });
+                    })
+                    .catch((error) => {
+                        Swal.fire('Error!', error.response.data.message, 'error')
+                        console.error('Error:', error);
+                    });
+            }
+        });
+    }
 };
 </script>
 
@@ -115,11 +137,12 @@ const handleBulkDelete = () => {
                                 </div>
                             </form>
                         </div>
-                        <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                        <div
+                            class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                             <button @click="handleBulkDelete" v-show="anyCheckboxSelected" type="button" id="deleteSelected"
-								class="flex items-center justify-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-								<TrashIcon class="w-5 h-5" />
-							</button>
+                                class="flex items-center justify-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                                <TrashIcon class="w-5 h-5" />
+                            </button>
 
                             <button type="button"
                                 class="flex items-center justify-center text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800">
@@ -133,8 +156,8 @@ const handleBulkDelete = () => {
                                 <tr>
                                     <th scope="col" class="px-4 py-3 w-[5%]">
                                         <div class="flex items-center">
-                                            <input v-model="selectAll" id="checkbox-all" type="checkbox" 
-                                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <input v-model="selectAll" id="checkbox-all" type="checkbox"
+                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="checkbox-all" class="sr-only">checkbox</label>
                                         </div>
                                     </th>
@@ -176,14 +199,13 @@ const handleBulkDelete = () => {
                                 <tr v-for="client in clients" :key="client.id" class="border-b dark:border-gray-700">
                                     <th scope="row" class="px-4 py-3">
                                         <div class="flex items-center">
-                                            <input v-model="client.selected" :id="'checkbox-' + client.id" 
-                                            @click="togglePetSelection(client.id)" type="checkbox" 
-                                            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <input v-model="client.selected" :id="'checkbox-' + client.id"
+                                                @click="togglePetSelection(client.id)" type="checkbox"
+                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="checkbox-table-1" class="sr-only">checkbox</label>
                                         </div>
                                     </th>
-                                    <td 
-                                        class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ client.name }}
                                     </td>
                                     <td class="px-4 py-3">{{ client.email }}</td>
@@ -202,7 +224,7 @@ const handleBulkDelete = () => {
                                             <PencilSquareIcon class="w-5 h-5 text-indigo-500 hover:text-indigo-800 mr-1" />
                                             <span class="sr-only">Edit</span>
                                         </button>
-                                        <button
+                                        <button @click="deleteClient(client.id)"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                             type="button">
                                             <TrashIcon class="w-5 h-5 text-red-500 hover:text-red-800" />
