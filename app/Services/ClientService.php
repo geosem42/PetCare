@@ -58,6 +58,6 @@ class ClientService
   public function findClientBySlug($slug)
   {
     $id = (int) substr($slug, strrpos($slug, '-') + 1);
-    return Client::with('pets.species', 'pets.breed')->findOrFail($id);
+    return Client::findOrFail($id); // with('pets.species', 'pets.breed')
   }
 }
