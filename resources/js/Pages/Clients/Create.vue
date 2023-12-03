@@ -1,11 +1,13 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { ref } from 'vue'
-import { useToast } from "vue-toastification";
-import { useMyForm } from './js/validation.js';
+import { useToast } from "vue-toastification"
+import { useMyForm } from './js/validation.js'
+import Spinner from '@/Components/Spinner.vue'
 
 const toast = useToast();
-const { handleSubmit, errors, name, nameAttrs, email, emailAttrs, phone_number, phoneNumberAttrs, address, addressAttrs, notes, notesAttrs } = useMyForm();
+const isSubmitting = ref(false)
+const { handleSubmit, meta, errors, name, nameAttrs, email, emailAttrs, phone_number, phoneNumberAttrs, address, addressAttrs, notes, notesAttrs } = useMyForm();
 const createForm = ref({
   name: '',
   email: '',
@@ -24,8 +26,10 @@ const resetForm = () => {
 }
 
 const submitForm = handleSubmit(async values => {
+  isSubmitting.value = true
   const response = await axios.post('/clients/store', values)
   resetForm()
+  isSubmitting.value = false
   toast.success(response.data.message)
 });
 
@@ -86,10 +90,17 @@ const submitForm = handleSubmit(async values => {
               <span class="text-red-500 text-xs">{{ errors.notes }}</span>
             </div>
           </div>
-          <button type="submit"
-            class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-indigo-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-indigo-900 hover:bg-indigo-800">
+          
+          <button v-if="isSubmitting" disabled type="button" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 rounded-lg text-center me-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 disabled:bg-indigo-300 disabled:cursor-not-allowed">
+            <Spinner />
+            Loading...
+          </button>
+
+          <button v-else type="submit" :disabled="!meta.valid"
+            class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-indigo-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-indigo-900 hover:bg-indigo-800 disabled:bg-indigo-300 disabled:cursor-not-allowed">
             Add Client
           </button>
+
         </form>
       </div>
     </section>
