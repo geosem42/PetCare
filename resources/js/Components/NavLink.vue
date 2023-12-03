@@ -9,7 +9,7 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'bg-gray-800 text-gray-100 group-hover:text-gray-100'
+        ? 'bg-gray-800 text-white'
         : '';
 });
 </script>
