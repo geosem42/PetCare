@@ -39,6 +39,7 @@ Route::middleware([
     Route::delete('/clients/bulk-delete/selected', [ClientController::class, 'bulkDelete'])->name('clients.bulkDelete');
     Route::put('/client/{id}', [ClientController::class, 'update'])->name('client.update');
     Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    Route::get('/client/{slug}/show', [ClientController::class, 'show'])->name('client.show');
     Route::get('/client/{slug}/edit', [ClientController::class, 'edit'])->name('client.edit');
 
     Route::get('/pets', [PetController::class, 'index'])->name('pets');

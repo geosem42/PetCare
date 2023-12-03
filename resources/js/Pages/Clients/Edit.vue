@@ -3,11 +3,11 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import { ref, defineProps, onMounted } from 'vue'
 import { usePage } from "@inertiajs/vue3"
 import { useToast } from "vue-toastification"
-import { useMyForm } from './js/validation.js'
+import { createValidationForm } from './Validation/create.js'
 import Spinner from '@/Components/Spinner.vue'
 
 const toast = useToast();
-const { handleSubmit, meta, errors, name, nameAttrs, email, emailAttrs, phone_number, phoneNumberAttrs, address, addressAttrs, notes, notesAttrs } = useMyForm();
+const { handleSubmit, meta, errors, name, nameAttrs, email, emailAttrs, phone_number, phoneNumberAttrs, address, addressAttrs, notes, notesAttrs } = createValidationForm();
 const { client } = usePage().props
 const isSubmitting = ref(false)
 
@@ -62,7 +62,7 @@ const submitForm = handleSubmit(async values => {
       </h2>
     </template>
 
-    <section class="bg-white dark:bg-gray-900">
+    <section class="bg-white dark:bg-gray-900 rounded-xl">
       <div class="px-4 mx-auto py-4">
         <form @submit="submitForm">
           <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -117,7 +117,7 @@ const submitForm = handleSubmit(async values => {
 
           <button v-else type="submit" :disabled="!meta.valid"
             class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-indigo-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-indigo-900 hover:bg-indigo-800 disabled:bg-indigo-300 disabled:cursor-not-allowed">
-            Add Client
+            Update Client
           </button>
           
         </form>

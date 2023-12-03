@@ -2,12 +2,12 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { ref } from 'vue'
 import { useToast } from "vue-toastification"
-import { useMyForm } from './js/validation.js'
+import { createValidationForm } from './Validation/create.js'
 import Spinner from '@/Components/Spinner.vue'
 
 const toast = useToast();
 const isSubmitting = ref(false)
-const { handleSubmit, meta, errors, name, nameAttrs, email, emailAttrs, phone_number, phoneNumberAttrs, address, addressAttrs, notes, notesAttrs } = useMyForm();
+const { handleSubmit, meta, errors, name, nameAttrs, email, emailAttrs, phone_number, phoneNumberAttrs, address, addressAttrs, notes, notesAttrs } = createValidationForm();
 const createForm = ref({
   name: '',
   email: '',
@@ -43,7 +43,7 @@ const submitForm = handleSubmit(async values => {
       </h2>
     </template>
 
-    <section class="bg-white dark:bg-gray-900">
+    <section class="bg-white dark:bg-gray-900 rounded-xl">
       <div class="px-4 mx-auto py-4">
         <form @submit="submitForm">
           <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">

@@ -26,4 +26,12 @@ class ClientSearchRequest extends FormRequest
 			'keywords' => ['required', 'string']
 		];
     }
+
+    public function messages()
+{
+    return [
+        'keywords.required' => 'Search keyword is required.',
+        'keywords.string'  => 'Search keyword must be a string.',
+    ];
+}
 }

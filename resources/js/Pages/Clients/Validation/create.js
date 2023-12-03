@@ -1,8 +1,7 @@
-// validation.js
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 
-export const useMyForm = () => {
+export const createValidationForm = () => {
   const { meta, errors, defineField, handleSubmit } = useForm({
     validationSchema: yup.object({
       name: yup.string().required('Client Name is required'),
