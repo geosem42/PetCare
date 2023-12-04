@@ -56,7 +56,7 @@ class PetController extends Controller
 
 	public function edit($slug): Response
 	{
-		$pet = Pet::where('slug', $slug)->with(['user', 'species', 'breed'])->firstOrFail();
+		$pet = Pet::where('slug', $slug)->with(['client', 'species', 'breed'])->firstOrFail();
 
 		if ($pet->photo) {
 			$pet->photo = url('/') . '/' . $pet->photo;
@@ -76,26 +76,19 @@ class PetController extends Controller
 		], 200);
 	}
 
-	public function delete($id) : JsonResponse
+	public function delete($id): JsonResponse
 	{
-			$this->petService->deletePet($id);
+		$this->petService->deletePet($id);
 
-			return response()->json([
-					'message' => 'Pet successfully deleted!'
-			], 200);
+		return response()->json([
+			'message' => 'Pet successfully deleted!'
+		], 200);
 	}
 
 	public function bulkDelete(PetBulkDeleteRequest $request): JsonResponse
-    {
-        $this->petService->bulkDeletePets($request->validated()['selectedIds']);
-        return response()->json(['success' => 'Selected pets deleted successfully'], 201);
-    }
-
-	public function searchUsers(Request $request): JsonResponse
 	{
-		$search = $request->input('name');
-		$users = $this->petService->searchUsers($search);
-		return response()->json($users);
+		$this->petService->bulkDeletePets($request->validated()['selectedIds']);
+		return response()->json(['success' => 'Selected pets deleted successfully'], 201);
 	}
 
 	public function fetchAllPets(Request $request): JsonResponse
@@ -132,5 +125,18 @@ class PetController extends Controller
 	{
 		$breeds = $this->petService->searchBreeds($request->species_id);
 		return response()->json($breeds, 201);
+	}
+
+	public function fetchAllClients(): JsonResponse
+	{
+		$clients = $this->petService->fetchAllClients();
+		return response()->json($clients);
+	}
+
+	public function searchClients(Request $request): JsonResponse
+	{
+		$search = $request->input('name');
+		$clients = $this->petService->searchClients($search);
+		return response()->json($clients);
 	}
 }

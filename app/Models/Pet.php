@@ -4,17 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
-/**
- * @method static create(array $array)
- * @method static orderBy(string $string, string $string1)
- * @method static where(string $string, string $string1, string $string2)
- * @method static findOrFail($id)
- */
 class Pet extends Model
 {
 	use HasFactory;
@@ -29,9 +23,23 @@ class Pet extends Model
 		'photo'
 	];
 
-	public function user(): BelongsTo
+	protected function performInsert(Builder $query)
 	{
-		return $this->belongsTo(User::class);
+		$this->slug = Str::slug($this->name) . '-temp';
+		parent::performInsert($query);
+	}
+
+	protected static function booted()
+	{
+		static::created(function ($pet) {
+			$pet->slug = Str::slug($pet->name) . '-' . $pet->id;
+			$pet->save();
+		});
+	}
+
+	public function client(): BelongsTo
+	{
+		return $this->belongsTo(Client::class);
 	}
 
 	public function species(): BelongsTo
@@ -44,28 +52,28 @@ class Pet extends Model
 		return $this->BelongsTo(Breed::class);
 	}
 
-	public function vaccinations(): HasMany
-	{
-		return $this->hasMany(Vaccination::class);
-	}
+	/* 	public function vaccinations(): HasMany
+		{
+			return $this->hasMany(Vaccination::class);
+		}
 
-	public function medicalHistory(): HasMany
-	{
-		return $this->hasMany(MedicalHistory::class);
-	}
+		public function medicalHistory(): HasMany
+		{
+			return $this->hasMany(MedicalHistory::class);
+		}
 
-	public function medications(): HasMany
-	{
-		return $this->hasMany(Medication::class);
-	}
+		public function medications(): HasMany
+		{
+			return $this->hasMany(Medication::class);
+		}
 
-	public function surgicalHistory(): HasMany
-	{
-		return $this->hasMany(SurgicalHistory::class);
-	}
+		public function surgicalHistory(): HasMany
+		{
+			return $this->hasMany(SurgicalHistory::class);
+		}
 
-	public function galleries()
-	{
-		return $this->hasMany(Image::class);
-	}
+		public function images()
+		{
+			return $this->hasMany(Image::class);
+		} */
 }

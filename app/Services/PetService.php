@@ -6,11 +6,13 @@ use App\Models\Breed;
 use App\Models\Pet;
 use App\Models\Species;
 use App\Models\User;
+Use App\Models\Client;
 
 class PetService
 {
     public function createPet(array $data): void
     {
+        \Log::info('Create Pet', $data);
         $pet = Pet::create($data);
 
         if (array_key_exists('photo', $data) && $data['photo']->isValid()) {
@@ -56,11 +58,6 @@ class PetService
         $pet->save();
     }
 
-    public function searchUsers($name)
-    {
-        return User::where('name', 'like', "%$name%")->get(['id', 'name']);
-    }
-
     public function fetchAllPets($page)
     {
         $perPage = 10;
@@ -103,5 +100,15 @@ class PetService
     public function searchBreeds($speciesId)
     {
         return Breed::where('species_id', $speciesId)->get();
+    }
+
+    public function fetchAllClients()
+    {
+        return Client::take(10)->get(['id', 'name']);
+    }
+
+    public function searchClients($name)
+    {
+        return Client::where('name', 'like', "%$name%")->get(['id', 'name']);
     }
 }

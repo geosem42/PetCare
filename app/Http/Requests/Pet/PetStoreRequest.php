@@ -23,12 +23,12 @@ class PetStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
-            'species_id' => ['sometimes', 'integer'],
+            'name' => ['required', 'string', 'max:255'],
+            'species_id' => ['required', 'integer'],
             'breed_id' => ['sometimes', 'integer'],
             'age' => ['nullable', 'integer'],
             'gender' => ['nullable', 'string', 'max:255'],
-            'user_id' => ['sometimes', 'integer'],
+            'client_id' => ['required', 'integer'],
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:1024'],
         ];
     }
