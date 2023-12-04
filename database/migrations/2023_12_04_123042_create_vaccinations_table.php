@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('vaccinations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('email');
-            $table->string('phone_number')->nullable();
-            $table->text('address')->nullable();
+            $table->foreignId('pet_id')->constrained()->onDelete('cascade');
+            $table->string('vaccine_name')->nullable();
+            $table->date('administered_at')->nullable();
+            $table->string('batch_number')->nullable();
+            $table->string('administering_veterinarian')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('vaccinations');
     }
 };

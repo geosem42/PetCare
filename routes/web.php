@@ -42,8 +42,16 @@ Route::middleware([
     Route::put('/clients/{id}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
     
-
     Route::get('/pets', [PetController::class, 'index'])->name('pets');
+    Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
+    Route::post('/pets/store', [PetController::class, 'store'])->name('pets.store');
+    Route::get('/pets/fetchAllPets', [PetController::class, 'fetchAllPets'])->name('pets.fetchAll');
+    Route::post('/pets/search', [PetController::class, 'search'])->name('pets.search');
+    Route::delete('/pets/bulk-delete/selected', [PetController::class, 'bulkDelete'])->name('pets.bulkDelete');
+    Route::get('/pets/{slug}/show', [PetController::class, 'show'])->name('pets.show');
+    Route::get('/pets/{slug}/edit', [PetController::class, 'edit'])->name('pets.edit');
+    Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
+    Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 
