@@ -38,14 +38,14 @@ class ClientTest extends TestCase
     public function testShow()
     {
         $client = Client::factory()->create();
-        $response = $this->get('/client/' . $client->slug . '/show');
+        $response = $this->get('/clients/' . $client->slug . '/show');
         $response->assertStatus(200);
     }
 
     public function testEdit()
     {
         $client = Client::factory()->create();
-        $response = $this->get('/client/' . $client->slug . '/edit');
+        $response = $this->get('/clients/' . $client->slug . '/edit');
         $response->assertStatus(200);
     }
 
@@ -70,7 +70,7 @@ class ClientTest extends TestCase
         $request->initialize([], $clientData);
         $request->setMethod('PUT');
         $request->setValidator(app()->get('validator')->make($clientData, $request->rules()));
-        $response = $this->put('/client/' . $client->id, $request->validated());
+        $response = $this->put('/clients/' . $client->id, $request->validated());
         $response->assertStatus(201);
     }
 

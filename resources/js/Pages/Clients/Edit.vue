@@ -46,7 +46,7 @@ const resetForm = () => {
 
 const submitForm = handleSubmit(async values => {
   isSubmitting.value = true
-  const response = await axios.put(`/client/${props.client.id}`, values)
+  const response = await axios.put(`/clients/${props.client.id}`, values)
   resetForm()
   isSubmitting.value = false
   toast.success(response.data.message)

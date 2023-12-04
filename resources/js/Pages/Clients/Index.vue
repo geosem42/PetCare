@@ -226,7 +226,7 @@ const handleBulkDelete = () => {
                                         </div>
                                     </td>
                                 </tr>
-                                <tr v-for="client in clients" :key="client.id" class="md:table-row flex flex-col md:flex-row border-b dark:border-gray-700">
+                                <tr v-for="client in clients" :key="client.id" class="lg:table-row flex flex-col lg:flex-row border-b dark:border-gray-700">
                                     <th scope="row" class="px-4 py-3">
                                         <div class="flex items-center">
                                             <input v-model="client.selected" :id="'checkbox-' + client.id"
@@ -235,19 +235,19 @@ const handleBulkDelete = () => {
                                             <label for="checkbox-table-1" class="sr-only">checkbox</label>
                                         </div>
                                     </th>
-                                    <td class="px-4 py-1 sm:py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full">
+                                    <td class="px-4 py-1 lg:py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full">
                                         {{ client.name }}
                                     </td>
-                                    <td class="px-4 py-1 sm:py-3 w-full">{{ client.email }}</td>
-                                    <td class="px-4 py-1 sm:py-3 w-full">{{ client.phone_number }}</td>
-                                    <td class="px-4 py-1 sm:py-3 w-full">{{ moment(client.created_at).format('MMMM Do, YYYY') }}</td>
-                                    <td class="px-4 py-4 sm:py-3 w-full flex items-center justify-start sm:justify-end">
-                                        <Link :href="route('client.show', { slug: client.slug })"
+                                    <td class="px-4 py-1 lg:py-3 w-full">{{ client.email }}</td>
+                                    <td class="px-4 py-1 lg:py-3 w-full">{{ client.phone_number }}</td>
+                                    <td class="px-4 py-1 lg:py-3 w-full">{{ moment(client.created_at).format('MMMM Do, YYYY') }}</td>
+                                    <td class="px-4 py-4 lg:py-3 w-full flex items-center justify-start lg:justify-end">
+                                        <Link :href="route('clients.show', { slug: client.slug })"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
                                         <EyeIcon class="w-5 h-5 mr-1" />
                                         <span class="sr-only">View</span>
                                         </Link>
-                                        <Link :href="route('client.edit', { slug: client.slug })"
+                                        <Link :href="route('clients.edit', { slug: client.slug })"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
                                         <PencilSquareIcon class="w-5 h-5 text-indigo-500 hover:text-indigo-800 mr-1" />
                                         <span class="sr-only">Edit</span>
