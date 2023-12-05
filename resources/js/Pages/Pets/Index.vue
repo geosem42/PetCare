@@ -238,8 +238,8 @@ const handleBulkDelete = () => {
                                     <td class="px-4 py-1 lg:py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ pet.name }}
                                     </td>
-                                    <td class="px-4 py-1 lg:py-">{{ pet.species.name }}</td>
-                                    <td class="px-4 py-1 lg:py-3">{{ pet.breed.name }}</td>
+                                    <td class="px-4 py-1 lg:py-">{{ pet.species && pet.species.name ? pet.species.name : '-' }}</td>
+                                    <td class="px-4 py-1 lg:py-3">{{ pet.breed && pet.breed.name ? pet.breed.name : '-' }}</td>
                                     <td class="px-4 py-1 lg:py-3">{{ moment(pet.created_at).format('MMMM Do, YYYY') }}</td>
                                     <td class="px-4 py-4 lg:py-3 flex items-center justify-start lg:justify-end">
                                         <Link :href="route('pets.show', { slug: pet.slug })"

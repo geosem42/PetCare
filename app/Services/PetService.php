@@ -12,7 +12,6 @@ class PetService
 {
     public function createPet(array $data): void
     {
-        \Log::info('Create Pet', $data);
         $pet = Pet::create($data);
 
         if (array_key_exists('photo', $data) && $data['photo']->isValid()) {

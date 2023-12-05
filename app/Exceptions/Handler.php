@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof ValidationException) {
             if ($request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Validation failed',
+                    'message' => 'Validation failed.',
                     'errors' => $e->validator->errors()
                 ], 422);
             }
@@ -84,6 +84,16 @@ class Handler extends ExceptionHandler
     
             if ($request->inertia()) {
                 return redirect()->back()->with('error', 'Method not allowed.');
+            }
+        }
+
+        if ($e instanceof BadMethodCallException) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Method not found.', 'error' => $e->getMessage()], 500);
+            }
+    
+            if ($request->inertia()) {
+                return redirect()->back()->with('error', 'Method not found.');
             }
         }
 

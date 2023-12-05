@@ -25,7 +25,7 @@ class PetStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'species_id' => ['required', 'integer'],
-            'breed_id' => ['sometimes', 'integer'],
+            'breed_id' => ['nullable', 'integer'],
             'age' => ['nullable', 'integer'],
             'gender' => ['nullable', 'string', 'max:255'],
             'client_id' => ['required', 'integer'],

@@ -47,6 +47,7 @@ class PetController extends Controller
 
 	public function store(PetStoreRequest $request): JsonResponse
 	{
+		\Log::info($request->all());
 		$this->petService->createPet($request->validated());
 
 		return response()->json([
@@ -76,7 +77,7 @@ class PetController extends Controller
 		], 200);
 	}
 
-	public function delete($id): JsonResponse
+	public function destroy($id): JsonResponse
 	{
 		$this->petService->deletePet($id);
 
