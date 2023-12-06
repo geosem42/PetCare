@@ -25,7 +25,7 @@ class PetUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'species_id' => ['required', 'integer'],
-            'breed_id' => ['required', 'integer'],
+            'breed_id' => ['sometimes', 'integer'],
             'age' => ['sometimes', 'integer'],
             'gender' => ['sometimes', 'string', 'max:255'],
             'client_id' => ['required', 'integer'],

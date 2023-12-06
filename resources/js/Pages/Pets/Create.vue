@@ -5,7 +5,7 @@ import { useForm } from "@inertiajs/vue3"
 import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import { useToast } from "vue-toastification"
-import { validateForm, errors, watchFields } from './Validation/create.js'
+import { validateForm, errors, watchFields } from '@/Validation/Pets/create'
 
 const isSubmitting = ref(false)
 const selectedUser = ref(null);
@@ -225,9 +225,9 @@ watch(selectedBreed, () => {
 						<select v-model="createForm.gender" id="gender"
 							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50">
 							<option disabled selected>Select Gender</option>
-							<option value="Male">Male</option>
-							<option value="Female">Female</option>
-							<option value="None">None</option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+							<option value="none">None</option>
 						</select>
 					</div>
 					<div class="col-span-4 sm:col-span-2">

@@ -18,7 +18,7 @@ class PetsSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $genders = ['Male', 'Female'];
+        $genders = ['male', 'female'];
         $species = Species::all();
         $clients = Client::all();
 
@@ -36,7 +36,7 @@ class PetsSeeder extends Seeder
                 'breed_id' => $breedRandom->id,
                 'age' => rand(1, 10),
                 'gender' => $genders[array_rand($genders)],
-                'photo' => '/images/pets/dummy_photo.jpg'
+                'photo' => '',
             ]);
         }
     }

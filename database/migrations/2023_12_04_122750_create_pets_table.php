@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('species_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('breed_id')->nullable();
         $table->foreign('breed_id')->references('id')->on('breeds')->onDelete('cascade'); 
-            $table->string('age')->nullable();
+            $table->integer('age')->nullable();
             $table->string('gender')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
