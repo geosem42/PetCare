@@ -216,6 +216,7 @@ watch(selectedBreed, () => {
 })
 
 onMounted(async () => {
+	errors.value = {}
 	await fetchAllClients()
 	await fetchAllSpecies()
 	await fetchAllBreeds()
@@ -344,7 +345,7 @@ onMounted(async () => {
 			</form>
 		</div>
 
-		<!-- <div class="max-w-full px-2 py-10 sm:px-0">
+		<div class="max-w-full px-2 py-10 sm:px-0">
 			<TabGroup>
 				<TabList class="flex flex-col sm:flex-row space-x-1 rounded-xl bg-blue-900/20 p-1">
 					<Tab as="template" v-slot="{ selected }" v-for="tab in tabs" :key="tab">
@@ -377,7 +378,7 @@ onMounted(async () => {
 					</TabPanel>
 				</TabPanels>
 			</TabGroup>
-		</div> -->
+		</div>
 
 
 	</AppLayout>

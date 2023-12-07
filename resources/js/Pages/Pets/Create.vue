@@ -159,7 +159,9 @@ watch(selectedBreed, () => {
 	}
 });
 
-
+onMounted(async () => {
+	errors.value = {}
+})
 </script>
 
 <template>

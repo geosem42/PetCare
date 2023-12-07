@@ -12,31 +12,29 @@ export const validateForm = (form) => {
         return;
     }
 
-    // Validate name
-    if (!form.name) {
+    // Validate name (trimming whitespace)
+    if (!form.name || !form.name.trim()) {
         errors.value.name = 'This field is required';
     }
 
-    // Validate email
-    if (!form.email) {
+    // Validate email (trimming whitespace)
+    if (!form.email || !form.email.trim()) {
         errors.value.email = 'This field is required';
-    } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+    } else if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
         errors.value.email = 'This field must be a valid email';
     }
 
-    // Validate phone_number
-    if (!form.phone_number) {
+    // Validate phone_number (trimming whitespace)
+    if (!form.phone_number || !form.phone_number.trim()) {
         errors.value.phone_number = 'This field is required';
     } // Additional validation can be added for phone_number if needed
 
-    // Validate address
-    if (form.address && typeof form.address !== 'string') {
+    // Validate address (trimming whitespace if it's a string)
+    if (form.address && typeof form.address === 'string' && !form.address.trim()) {
+        errors.value.address = 'This field cannot be only spaces';
+    } else if (form.address && typeof form.address !== 'string') {
         errors.value.address = 'This field must be a string';
     }
-
-    // The notes field is optional, remove any specific validation if not required
-
-    // Add additional validation rules as needed
 };
 
 export const clearError = (field) => {

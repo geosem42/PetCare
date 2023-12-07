@@ -33,28 +33,18 @@ const addVaccination = () => {
 };
 
 const deleteVaccination = async (index) => {
+  const vaccinationId = vaccinationsForm.value[index].id;
+
   if (vaccinationsForm.value.length === 1) {
-		const vaccinationId = vaccinationsForm.value[index].id;
-    // Clear the form
+    // Clear the form when there's only one vaccination entry
     vaccinationsForm.value[index] = { vaccine_name: '', administered_at: '', batch_number: '', administering_veterinarian: '', notes: '' };
-    // Send the id to the backend
-    await axios.delete(`/pets/${pet.id}/vaccinations/${vaccinationId}`);
-    toast.success('Vaccination successfully deleted!', {"position": "bottom-right"});
   } else {
-    try {
-      const vaccination = vaccinationsForm.value[index];
-      await axios.delete(`/pets/${pet.id}/vaccinations/${vaccination.id}`);
-      vaccinationsForm.value.splice(index, 1);
-      toast.success('Vaccination successfully deleted!', {
-        "position": "bottom-right",
-      });
-    } catch (error) {
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
+    // Remove the vaccination entry from the form array
+    vaccinationsForm.value.splice(index, 1);
   }
+
+  await axios.delete(`/pets/${pet.id}/vaccinations/${vaccinationId}`);
+  toast.success('Vaccination successfully deleted!');
 };
 
 const storeVaccination = async () => {
@@ -64,10 +54,6 @@ const storeVaccination = async () => {
 
   submitData.vaccinations.forEach(vaccination => {
     vaccination.pet_id = pet.id;
-    if (!vaccination.id) {
-      vaccination.id = null;
-    }
-
     if (vaccination.administered_at) {
       vaccination.administered_at = moment(vaccination.administered_at).format('YYYY-MM-DD HH:mm:ss');
     } else {
@@ -75,80 +61,36 @@ const storeVaccination = async () => {
     }
   });
 
-  try {
-    const response = await axios.post(`/pets/${pet.id}/vaccinations`, submitData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  const response = await axios.post(`/pets/${pet.id}/vaccinations`, submitData, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-    toast.success(response.data.message, {
-      "position": "bottom-right",
-    });
+  toast.success(response.data.message);
 
-    errors.value = {};
+  errors.value = {};
 
-    // Update the form with the returned vaccinations
-    if (response.data.vaccinations && response.data.vaccinations.length > 0) {
-      response.data.vaccinations.forEach(newVaccination => {
-        const index = vaccinationsForm.value.findIndex(v => v.id === null);
-        if (index !== -1) {
-          // Replace temporary vaccination with real one
-          vaccinationsForm.value.splice(index, 1, newVaccination);
-        }
-      });
-    }
+  // Update the form with the returned vaccinations
+  if (response.data.vaccinations && response.data.vaccinations.length > 0) {
+  response.data.vaccinations.forEach((newVaccination, index) => {
+    const existingVaccinationsCount = vaccinationsForm.value.length - response.data.vaccinations.length;
+    const newVaccinationIndex = existingVaccinationsCount + index;
+    vaccinationsForm.value.splice(newVaccinationIndex, 1, newVaccination);
+  });
+}
 
-  } catch (error) {
-    if (error.response.status === 422) {
-      errors.value = error.response.data.errors;
-
-      // console.log('errors.value', errors.value);
-      // console.log('error.response.data.errors', error.response.data.errors);
-
-      for (let field in errors.value) {
-        let fieldErrors = errors.value[field];
-        if (Array.isArray(fieldErrors)) {
-          fieldErrors.forEach(error => {
-            toast.error(error, {
-              "position": "bottom-right",
-            });
-          });
-        } else if (typeof fieldErrors === 'string') {
-          toast.error(fieldErrors, {
-            "position": "bottom-right",
-          });
-        }
-      }
-    } else {
-      // Handle other types of errors
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
-  } finally {
-    isSubmitting.value = false;
-  }
+  isSubmitting.value = false;
 };
 
 const fetchVaccinations = async () => {
-  try {
-    const response = await axios.get(`/pets/${pet.id}/vaccinations`);
-    // console.log(response.data);
-    vaccinationsForm.value = response.data;
+  const response = await axios.get(`/pets/${pet.id}/vaccinations`);
+  vaccinationsForm.value = response.data;
 
-		if (vaccinationsForm.value.length === 0) {
-      vaccinationsForm.value.push({ vaccine_name: '', administered_at: '', batch_number: '', administering_veterinarian: '', notes: '' });
-    }
-
-  } catch (error) {
-    console.error(error.response.data.message);
-    toast.error(error.response.data.message, {
-      "position": "bottom-right",
-    });
+  if (vaccinationsForm.value.length === 0) {
+    vaccinationsForm.value.push({ vaccine_name: '', administered_at: '', batch_number: '', administering_veterinarian: '', notes: '' });
   }
-}
+};
 </script>
 
 <template>

@@ -47,7 +47,6 @@ class PetController extends Controller
 
 	public function store(PetStoreRequest $request): JsonResponse
 	{
-		\Log::info($request->all());
 		$this->petService->createPet($request->validated());
 
 		return response()->json([

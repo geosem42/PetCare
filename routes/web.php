@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\VaccinationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,11 @@ Route::middleware([
     Route::get('/pets/{slug}/edit', [PetController::class, 'edit'])->name('pets.edit');
     Route::post('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
     Route::delete('/pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
+
+    // Vaccinations
+    Route::post('/pets/{pet}/vaccinations', [VaccinationController::class, 'storeVaccination'])->name('pets.vaccinations.store');
+    Route::delete('/pets/{pet}/vaccinations/{vaccination}', [VaccinationController::class, 'destroyVaccination'])->name('pets.vaccinations.delete');
+    Route::get('/pets/{pet}/vaccinations', [VaccinationController::class, 'fetchVaccinations'])->name('pets.vaccinations.fetch');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 
