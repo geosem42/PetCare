@@ -1,11 +1,12 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { ref, defineProps, onMounted } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, usePage, router } from '@inertiajs/vue3'
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
 import { useToast } from "vue-toastification"
+import Swal from "sweetalert2"
 import {
-	PencilSquareIcon, BoltIcon, ArrowSmallRightIcon
+	PencilSquareIcon, BoltIcon, ArrowSmallRightIcon, TrashIcon
 } from "@heroicons/vue/24/outline/index.js"
 import VaccinationsTable from '@/Pages/Pets/Partials/Tables/Vaccinations.vue'
 import MedicalHistoryTable from '@/Pages/Pets/Partials/Tables/MedicalHistory.vue'
@@ -31,21 +32,32 @@ const props = defineProps({
 })
 
 const fetchVaccinations = async () => {
-	try {
-		const response = await axios.get(`/pets/${pet.id}/vaccinations`);
-		//console.log(response.data);
-		data.value = response.data;
+	const response = await axios.get(`/pets/${pet.id}/vaccinations`);
+	data.value = response.data;
+}
 
-		if (data.value.length === 0) {
-			console.log('no vaccinations found')
+const deletePet = (id) => {
+	Swal.fire({
+		title: 'Delete Pet?',
+		text: 'Are you sure you want to delete this pet?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: 'Yes, delete it',
+		cancelButtonText: 'No, keep it'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			axios.delete(`/pets/${id}`)
+				.then(response => {
+					Swal.fire('Deleted!', response.data.message, 'success')
+						.then(() => {
+							router.visit(route('pets'), { method: 'get' })
+						});
+				})
+				.catch(error => {
+					Swal.fire('Error!', error.response.data.message, 'error');
+				});
 		}
-
-	} catch (error) {
-		console.error(error);
-		toast.error(error.response.data.message, {
-			"position": "bottom-right",
-		});
-	}
+	});
 }
 
 </script>
@@ -57,10 +69,17 @@ const fetchVaccinations = async () => {
 				<h2 class="font-semibold text-xl text-gray-800 leading-tight">
 					Show Pet: {{ pet.name }}
 				</h2>
-				<div class="">
+				<div class="flex justify-evenly">
 					<Link :href="route('pets.edit', { slug: pet.slug })" class="text-indigo-700 hover:text-indigo-500">
-						<PencilSquareIcon class="w-8 h-8" />
+					<PencilSquareIcon class="w-8 h-8" />
 					</Link>
+
+					<button @click="deletePet(pet.id)"
+						class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
+						type="button">
+						<TrashIcon class="w-8 h-8 text-red-500 hover:text-red-800" />
+						<span class="sr-only">Delete</span>
+					</button>
 				</div>
 			</div>
 		</template>
@@ -118,24 +137,28 @@ const fetchVaccinations = async () => {
 					</TabList>
 
 					<TabPanels>
-						<TabPanel :class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
+						<TabPanel
+							:class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
 							<VaccinationsTable :pet="pet" />
 						</TabPanel>
-						<TabPanel :class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
+						<TabPanel
+							:class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
 							<MedicalHistoryTable :pet="pet" />
 						</TabPanel>
-						<TabPanel :class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
+						<TabPanel
+							:class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
 							<MedicationsTable :pet="pet" />
 						</TabPanel>
-						<TabPanel :class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
+						<TabPanel
+							:class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
 							<SurgicalHistoryTable :pet="pet" />
 						</TabPanel>
-						<TabPanel :class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
+						<TabPanel
+							:class="['rounded-b-md shadow-md bg-white p-3', 'ring-white/60 ring-offset-2 focus:outline-none']">
 							<GalleryTable :pet="pet" />
 						</TabPanel>
 					</TabPanels>
 				</TabGroup>
-			</div>
 		</div>
-	</AppLayout>
-</template>
+	</div>
+</AppLayout></template>
