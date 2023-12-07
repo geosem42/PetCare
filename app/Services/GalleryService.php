@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Gallery;
+use App\Models\Image;
 use App\Models\Pet;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GalleryService
 {
@@ -27,7 +25,7 @@ class GalleryService
 
       $photoPath = 'storage/photos/' . $pet->id . '/' . $newImageName;
 
-      $gallery = new Gallery;
+      $gallery = new Image;
       $gallery->pet_id = $pet->id;
       $gallery->path = $photoPath;
       $gallery->save();
@@ -40,7 +38,7 @@ class GalleryService
 
   public function fetchAllImages($petId)
   {
-    $galleries = Gallery::where('pet_id', $petId)->get();
+    $galleries = Image::where('pet_id', $petId)->get();
 
     // Map each gallery item to add the asset URL to the path
     $galleries->map(function ($gallery) {
@@ -53,7 +51,7 @@ class GalleryService
 
   public function destroy($petId, $galleryId)
   {
-    $gallery = Gallery::findOrFail($galleryId);
+    $gallery = Image::findOrFail($galleryId);
 
     if ((int) $gallery->pet_id !== (int) $petId) {
       throw new \Exception('The image does not belong to the specified pet');

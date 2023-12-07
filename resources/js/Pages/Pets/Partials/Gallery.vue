@@ -30,6 +30,7 @@ const handleFiles = event => {
 const isOpen = ref(false)
 
 function closeModal() {
+  files.value = []
   isOpen.value = false
 }
 function openModal() {
@@ -37,75 +38,48 @@ function openModal() {
 }
 
 const uploadFiles = async () => {
-  const formData = new FormData()
+  const formData = new FormData();
 
   files.value.forEach((file, index) => {
     formData.append('files[]', file);
   });
 
-  try {
-    const response = await axios.post(route('storeGallery', { pet: props.pet.id }), formData)
-    // console.log(response.data)
-    await fetchAllImages()
-    closeModal()
-    toast.success(response.data.message, {
-      "position": "bottom-right",
-    });
-  } catch (error) {
-    if (error.response && error.response.status === 422) {
-      let errors = error.response.data.errors;
-      for (let field in errors) {
-        let fieldErrors = errors[field];
-        if (Array.isArray(fieldErrors)) {
-          fieldErrors.forEach(error => {
-            toast.error(error, {
-              "position": "bottom-right",
-            });
-          });
-        } else if (typeof fieldErrors === 'string') {
-          toast.error(fieldErrors, {
-            "position": "bottom-right",
-          });
-        }
+  const response = await axios.post(route('pets.gallery.store', { pet: props.pet.id }), formData);
+
+  await fetchAllImages();
+  closeModal();
+  toast.success(response.data.message);
+
+  // Handle invalid responses with 422 status code
+  if (response.status === 422 && response.data.errors) {
+    const errors = response.data.errors;
+    for (const field in errors) {
+      const fieldErrors = errors[field];
+      if (Array.isArray(fieldErrors)) {
+        fieldErrors.forEach((error) => {
+          toast.error(error);
+        });
+      } else if (typeof fieldErrors === 'string') {
+        toast.error(fieldErrors);
       }
-    } else {
-      // Handle other types of errors
-      console.error(error);
     }
   }
-}
+};
 
 const fetchAllImages = async () => {
-  try {
-    const response = await axios.get(`/pets/${props.pet.id}/gallery`);
-    images.value = response.data;
-  } catch (error) {
-    toast.error(error.response.data.message, {
-      "position": "bottom-right",
-    });
-  }
+  const response = await axios.get(`/pets/${props.pet.id}/gallery`);
+  images.value = response.data;
+};
+
+const deleteImage = async (id) => {
+  const response = await axios.delete(`/pets/${props.pet.id}/gallery/${id}`);
+  images.value = images.value.filter((image) => image.id !== id);
+  toast.success(response.data.message);
 };
 
 onMounted(async () => {
   await fetchAllImages();
 });
-
-
-const deleteImage = async (id) => {
-  try {
-    const response = await axios.delete(`/pets/${props.pet.id}/gallery/${id}`)
-    images.value = images.value.filter(image => image.id !== id)
-    toast.success(response.data.message, {
-      "position": "bottom-right",
-    });
-  } catch (error) {
-    console.error(error.response.data.message);
-    toast.error(error.response.data.message, {
-      "position": "bottom-right",
-    });
-  }
-}
-
 </script>
 
 <template>
@@ -128,8 +102,6 @@ const deleteImage = async (id) => {
       </div>
     </div>
   </div>
-
-
 
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">

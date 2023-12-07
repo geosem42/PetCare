@@ -12,6 +12,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\VaccinationController;
 use App\Http\Controllers\MedicalHistoryController;
 use App\Http\Controllers\MedicationController;
+use App\Http\Controllers\GalleryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,11 @@ Route::middleware([
     Route::get('/pets/{pet}/surgeries', [SurgicalHistoryController::class, 'fetchSurgeries'])->name('pets.surgeries.fetch');
     Route::post('/pets/{pet}/surgeries', [SurgicalHistoryController::class, 'storeSurgery'])->name('pets.surgeries.store');
     Route::delete('/pets/{pet}/surgeries/{surgery}', [SurgicalHistoryController::class, 'destroySurgery'])->name('pets.surgeries.delete');
+
+    // Gallery
+    Route::get('/pets/{pet}/gallery', [GalleryController::class, 'fetchAllImages'])->name('pets.gallery.fetch');
+    Route::post('/pets/{pet}/gallery', [GalleryController::class, 'storeGallery'])->name('pets.gallery.store');
+    Route::delete('/pets/{pet}/gallery/{image}', [GalleryController::class, 'destroy'])->name('pets.gallery.delete');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 
