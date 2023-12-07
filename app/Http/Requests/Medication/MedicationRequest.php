@@ -25,7 +25,7 @@ class MedicationRequest extends FormRequest
         return [
             'medications' => ['required', 'array'],
             'medications.*.medication_name' => ['required', 'string', 'max:255'],
-            'medications.*.administered_at' => ['sometimes'],
+            'medications.*.administered_at' => ['required', 'date'],
             'medications.*.dosage' => ['nullable', 'string', 'max:255'],
             'medications.*.frequency' => ['nullable', 'string', 'max:255'],
             'medications.*.administering_veterinarian' => ['nullable', 'string', 'max:255'],

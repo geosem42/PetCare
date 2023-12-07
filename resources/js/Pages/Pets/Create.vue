@@ -5,7 +5,7 @@ import { useForm } from "@inertiajs/vue3"
 import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import { useToast } from "vue-toastification"
-import { validateForm, errors, watchFields } from '@/Validation/Pets/create'
+import { validateForm, errors, watchFields } from '@/Validation/Pets/Index'
 
 const isSubmitting = ref(false)
 const selectedUser = ref(null);

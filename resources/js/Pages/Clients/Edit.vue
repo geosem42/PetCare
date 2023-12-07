@@ -3,7 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import { ref, defineProps, onMounted } from 'vue'
 import { usePage } from "@inertiajs/vue3"
 import { useToast } from "vue-toastification"
-import { validateForm, watchFields, errors } from '@/Validation/Clients/create';
+import { validateForm, watchFields, errors } from '@/Validation/Clients/Index';
 import Spinner from '@/Components/Spinner.vue'
 
 const toast = useToast();

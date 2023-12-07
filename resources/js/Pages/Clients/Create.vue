@@ -3,7 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import { onMounted, ref } from 'vue'
 import { useToast } from "vue-toastification"
 import Spinner from '@/Components/Spinner.vue'
-import { validateForm, watchFields, errors } from '@/Validation/Clients/create';
+import { validateForm, watchFields, errors } from '@/Validation/Clients/Index';
 
 const toast = useToast();
 const isSubmitting = ref(false)

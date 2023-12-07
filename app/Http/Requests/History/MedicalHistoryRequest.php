@@ -25,7 +25,7 @@ class MedicalHistoryRequest extends FormRequest
         return [
             'histories' => ['required', 'array'],
             'histories.*.condition' => ['required', 'string'],
-            'histories.*.diagnosis_date' => ['sometimes', 'date'],
+            'histories.*.diagnosis_date' => ['required', 'date'],
             'histories.*.treatment' => ['nullable', 'string'],
             'histories.*.notes' => ['nullable', 'string'],
         ];

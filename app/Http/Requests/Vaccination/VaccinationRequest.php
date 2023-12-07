@@ -20,7 +20,7 @@ class VaccinationRequest extends FormRequest
         return [
             'vaccinations' => ['required', 'array'],
             'vaccinations.*.vaccine_name' => ['required', 'string', 'max:255'],
-            'vaccinations.*.administered_at' => ['required'],
+            'vaccinations.*.administered_at' => ['required', 'date'],
             'vaccinations.*.batch_number' => ['nullable', 'string', 'max:255'],
             'vaccinations.*.administering_veterinarian' => ['nullable', 'string', 'max:255'],
             'vaccinations.*.notes' => ['nullable', 'string'],

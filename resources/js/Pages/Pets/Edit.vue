@@ -12,7 +12,7 @@ import MedicationsForm from '@/Pages/Pets/Partials/MedicationsForm.vue'
 import MedicalHistoriesForm from '@/Pages/Pets/Partials/MedicalHistoriesForm.vue'
 import SurgicalHistoriesForm from '@/Pages/Pets/Partials/SurgicalHistoriesForm.vue'
 import Gallery from '@/Pages/Pets/Partials/Gallery.vue'
-import { validateForm, errors, watchFields } from '@/Validation/Pets/create'
+import { validateForm, errors, watchFields } from '@/Validation/Pets/Index'
 
 const isSubmitting = ref(false)
 const selectedUser = ref(null)
