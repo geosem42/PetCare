@@ -24,7 +24,7 @@ const props = defineProps({
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Dosage</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Frequency</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Administering Veterinarian</th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Notes</th>
+                        <th scope="col" class="py-3.5 text-right text-sm font-semibold text-gray-900">Notes</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -34,8 +34,7 @@ const props = defineProps({
                         <td class="whitespace-normal px-3 py-4 text-sm text-gray-500">{{ medication.administered_at }}</td>
                         <td class="whitespace-normal px-3 py-4 text-sm text-gray-500">{{ medication.dosage }}</td>
                         <td class="whitespace-normal px-3 py-4 text-sm text-gray-500">{{ medication.frequency }}</td>
-                        <td class="whitespace-normal px-3 py-4 text-sm text-gray-500">{{ medication.prescribing_veterinarian
-                        }}
+                        <td class="whitespace-normal px-3 py-4 text-sm text-gray-500">{{ medication.administering_veterinarian }}
                         </td>
                         <td class="relative whitespace-normal py-4 pl-3 pr-4 text-right text-sm sm:pr-0 text-gray-500">{{
                             medication.notes }}</td>

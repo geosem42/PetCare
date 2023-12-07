@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Appointment;
-use App\Models\User;
+use App\Models\Client;
 
 class AppointmentService
 {
@@ -40,11 +40,11 @@ class AppointmentService
 
     public function getAllUsers($limit = 10)
     {
-        return User::orderBy('id')->limit($limit)->get();
+        return Client::orderBy('id')->limit($limit)->get();
     }
 
     public function searchUsers($query, $limit = 10)
     {
-        return User::where('name', 'like', '%' . $query . '%')->limit($limit)->get();
+        return Client::where('name', 'like', '%' . $query . '%')->limit($limit)->get();
     }
 }

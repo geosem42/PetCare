@@ -1,5 +1,37 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { ref } from 'vue'
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+
+const calendarOptions = ref({
+  plugins: [ dayGridPlugin, interactionPlugin ],
+  initialView: 'dayGridMonth',
+  dateClick: handleDateClick,
+  headerToolbar: {
+    left: 'prev,next today addEvent',
+    center: 'title',
+    right: 'dayGridMonth,dayGridWeek,dayGridDay'
+  },
+  customButtons: {
+    addEvent: {
+      text: 'Add Event',
+      click: function() {
+        alert('clicked the custom button!');
+      }
+    }
+  },
+  events: [
+    { title: 'event 1', date: '2023-12-07' },
+    { title: 'event 2', date: '2023-12-07' }
+  ]
+})
+
+function handleDateClick(arg) {
+  alert('date click! ' + arg.dateStr)
+}
+
 </script>
 
 <template>
@@ -10,39 +42,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
             </h2>
         </template>
 
-        <div class="overflow-hidden sm:rounded-lg">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div class="border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-64">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64">
-                </div>
-            </div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-            </div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72">
-                </div>
-            </div>
+        <div class="rounded-xl">
+            <FullCalendar :options="calendarOptions" />
         </div>
     </AppLayout>
 </template>

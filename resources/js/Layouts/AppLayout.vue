@@ -497,7 +497,7 @@ const logout = () => {
 				</div>
 			</aside>
 
-			<main class="p-4 md:ml-64 h-screen pt-20">
+			<main class="p-4 md:ml-64 h-full pt-20">
 				<div class="max-w-full mx-auto sm:px-6 lg:px-8">
 					<header v-if="$slots.header" class="bg-white rounded-xl shadow mb-6">
 						<div class="py-6 px-4 sm:px-6 lg:px-8">

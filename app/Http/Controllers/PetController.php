@@ -33,7 +33,7 @@ class PetController extends Controller
 
 	public function show($slug)
 	{
-		$pet = Pet::where('slug', $slug)->with('user', 'species', 'breed', 'vaccinations', 'medications', 'medicalHistory', 'surgicalHistory', 'galleries')->first();
+		$pet = Pet::where('slug', $slug)->with('client', 'species', 'breed', 'vaccinations', 'medications', 'medicalHistory', 'surgicalHistory', 'images')->first();
 
 		if ($pet->photo) {
 			$pet->photo = url('/') . '/' . $pet->photo;

@@ -19,6 +19,10 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.10",
+        "@fullcalendar/daygrid": "^6.1.10",
+        "@fullcalendar/interaction": "^6.1.10",
+        "@fullcalendar/vue3": "^6.1.10",
         "@headlessui/vue": "^1.7.16",
         "@heroicons/vue": "^2.0.18",
         "flowbite": "^2.2.0",

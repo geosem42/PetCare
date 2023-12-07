@@ -52,7 +52,7 @@ class Pet extends Model
 		return $this->BelongsTo(Breed::class);
 	}
 
-	/* 	public function vaccinations(): HasMany
+		public function vaccinations(): HasMany
 		{
 			return $this->hasMany(Vaccination::class);
 		}
@@ -75,5 +75,5 @@ class Pet extends Model
 		public function images()
 		{
 			return $this->hasMany(Image::class);
-		} */
+		}
 }

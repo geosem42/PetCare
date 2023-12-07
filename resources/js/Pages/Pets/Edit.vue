@@ -5,7 +5,6 @@ import { usePage } from "@inertiajs/vue3"
 import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import { useToast } from "vue-toastification"
-import '@vuepic/vue-datepicker/dist/main.css';
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
 import VaccinationsForm from '@/Pages/Pets/Partials/VaccinationsForm.vue'
 import MedicationsForm from '@/Pages/Pets/Partials/MedicationsForm.vue'

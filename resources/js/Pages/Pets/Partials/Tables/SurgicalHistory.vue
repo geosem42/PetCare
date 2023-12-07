@@ -25,7 +25,7 @@ const props = defineProps({
             </th>
             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Surgeon</th>
-            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Notes</th>
+            <th scope="col" class="py-3.5 text-right text-sm font-semibold text-gray-900">Notes</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
