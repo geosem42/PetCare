@@ -52,10 +52,16 @@ const storeVaccination = async () => {
 
   let submitData = { vaccinations: vaccinationsForm.value };
 
-  submitData.vaccinations.forEach(vaccination => {
+  submitData.vaccinations.forEach((vaccination) => {
     vaccination.pet_id = pet.id;
+    if (!vaccination.id) {
+      vaccination.id = null;
+    }
+
     if (vaccination.administered_at) {
-      vaccination.administered_at = moment(vaccination.administered_at).format('YYYY-MM-DD HH:mm:ss');
+      vaccination.administered_at = moment(vaccination.administered_at).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
     } else {
       delete vaccination.administered_at;
     }
@@ -73,12 +79,14 @@ const storeVaccination = async () => {
 
   // Update the form with the returned vaccinations
   if (response.data.vaccinations && response.data.vaccinations.length > 0) {
-  response.data.vaccinations.forEach((newVaccination, index) => {
-    const existingVaccinationsCount = vaccinationsForm.value.length - response.data.vaccinations.length;
-    const newVaccinationIndex = existingVaccinationsCount + index;
-    vaccinationsForm.value.splice(newVaccinationIndex, 1, newVaccination);
-  });
-}
+    response.data.vaccinations.forEach((newVaccination) => {
+      const index = vaccinationsForm.value.findIndex((v) => v.id === null);
+      if (index !== -1) {
+        // Replace temporary vaccination with real one
+        vaccinationsForm.value.splice(index, 1, newVaccination);
+      }
+    });
+  }
 
   isSubmitting.value = false;
 };
