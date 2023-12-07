@@ -25,35 +25,36 @@ onMounted(async () => {
 })
 
 const medicationsForm = ref([
-	{ medication_name: '', administered_at: '', dosage: '', frequency: '', prescribing_veterinarian: '', notes: '' }
+	{ medication_name: '', administered_at: '', dosage: '', frequency: '', administering_veterinarian: '', notes: '' }
 ]);
 
 const addMedication = () => {
-  medicationsForm.value.push({ pet_id: '', medication_name: '', administered_at: '', dosage: '', frequency: '', prescribing_veterinarian: '', notes: '' });
+  medicationsForm.value.push({ pet_id: '', medication_name: '', administered_at: '', dosage: '', frequency: '', administering_veterinarian: '', notes: '' });
 };
 
 const deleteMedication = async (index) => {
   if (medicationsForm.value.length === 1) {
-		const medicationId = medicationsForm.value[index].id;
+    const medicationId = medicationsForm.value[index].id;
+
     // Clear the form
-    medicationsForm.value[index] = { medication_name: '', administered_at: '', dosage: '', frequency: '', prescribing_veterinarian: '', notes: '' };
+    medicationsForm.value[index] = {
+      medication_name: '',
+      administered_at: null,
+      dosage: '',
+      frequency: '',
+      administering_veterinarian: '',
+      notes: '',
+    };
+
     // Send the id to the backend
     await axios.delete(`/pets/${pet.id}/medications/${medicationId}`);
-    toast.success('Medication successfully deleted!', {"position": "bottom-right"});
+
+    toast.success('Medication successfully deleted!');
   } else {
-    try {
-      const medication = medicationsForm.value[index];
-      await axios.delete(`/pets/${pet.id}/medications/${medication.id}`);
-      medicationsForm.value.splice(index, 1);
-      toast.success('Medication successfully deleted!', {
-        "position": "bottom-right",
-      });
-    } catch (error) {
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
+    const medication = medicationsForm.value[index];
+    await axios.delete(`/pets/${pet.id}/medications/${medication.id}`);
+    medicationsForm.value.splice(index, 1);
+    toast.success('Medication successfully deleted!');
   }
 };
 
@@ -62,93 +63,60 @@ const storeMedication = async () => {
 
   let submitData = { medications: medicationsForm.value };
 
-  submitData.medications.forEach(medication => {
+  submitData.medications.forEach((medication) => {
     medication.pet_id = pet.id;
     if (!medication.id) {
       medication.id = null;
     }
 
     if (medication.administered_at) {
-      medication.administered_at = moment(medication.administered_at).format('YYYY-MM-DD HH:mm:ss');
+      medication.administered_at = moment(medication.administered_at).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
     } else {
       delete medication.administered_at;
     }
   });
 
-  try {
-    const response = await axios.post(`/pets/${pet.id}/medications`, submitData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  const response = await axios.post(`/pets/${pet.id}/medications`, submitData, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-    toast.success(response.data.message, {
-      "position": "bottom-right",
-    });
+  toast.success(response.data.message);
 
-    errors.value = {};
+  errors.value = {};
 
-    // Update the form with the returned medications
-    if (response.data.medications && response.data.medications.length > 0) {
-      response.data.medications.forEach(newMedication => {
-        const index = medicationsForm.value.findIndex(v => v.id === null);
-        if (index !== -1) {
-          // Replace temporary medication with real one
-          medicationsForm.value.splice(index, 1, newMedication);
-        }
-      });
-    }
-
-  } catch (error) {
-    if (error.response.status === 422) {
-      errors.value = error.response.data.errors;
-
-      // console.log('errors.value', errors.value);
-      // console.log('error.response.data.errors', error.response.data.errors);
-
-      for (let field in errors.value) {
-        let fieldErrors = errors.value[field];
-        if (Array.isArray(fieldErrors)) {
-          fieldErrors.forEach(error => {
-            toast.error(error, {
-              "position": "bottom-right",
-            });
-          });
-        } else if (typeof fieldErrors === 'string') {
-          toast.error(fieldErrors, {
-            "position": "bottom-right",
-          });
-        }
+  // Update the form with the returned medications
+  if (response.data.medications && response.data.medications.length > 0) {
+    response.data.medications.forEach((newMedication) => {
+      const index = medicationsForm.value.findIndex((v) => v.id === null);
+      if (index !== -1) {
+        // Replace temporary medication with real one
+        medicationsForm.value.splice(index, 1, newMedication);
       }
-    } else {
-      // Handle other types of errors
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
-  } finally {
-    isSubmitting.value = false;
+    });
   }
+
+  isSubmitting.value = false;
 };
 
 const fetchMedications = async () => {
-  try {
-    const response = await axios.get(`/pets/${pet.id}/medications`);
-    // console.log(response.data);
-    medicationsForm.value = response.data;
+  const response = await axios.get(`/pets/${pet.id}/medications`);
+  medicationsForm.value = response.data;
 
-		if (medicationsForm.value.length === 0) {
-      medicationsForm.value.push({ medication_name: '', administered_at: '', dosage: '', frequency: '', prescribing_veterinarian: '', notes: '' });
-    }
-
-  } catch (error) {
-    console.error(error.response.data.message);
-    toast.error(error.response.data.message, {
-      "position": "bottom-right",
+  if (medicationsForm.value.length === 0) {
+    medicationsForm.value.push({
+      medication_name: '',
+      administered_at: null,
+      dosage: '',
+      frequency: '',
+      administering_veterinarian: '',
+      notes: '',
     });
   }
-}
+};
 </script>
 
 <template>
@@ -188,8 +156,8 @@ const fetchMedications = async () => {
 					</div>
 
           <div class="col-span-12 md:col-span-6 lg:col-span-2">
-						<label for="prescribing_veterinarian" class="mb-2 block text-sm font-medium text-gray-500">Prescribing Veterinarian</label>
-						<input v-model="medication.prescribing_veterinarian" name="prescribing_veterinarian" id="frequency" placeholder="Prescribing Veterinarian"
+						<label for="administering_veterinarian" class="mb-2 block text-sm font-medium text-gray-500">Administering Veterinarian</label>
+						<input v-model="medication.administering_veterinarian" name="administering_veterinarian" id="frequency" placeholder="Administering Veterinarian"
 							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm">
 					</div>
 

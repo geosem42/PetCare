@@ -26,46 +26,37 @@ onMounted(async () => {
 
 const surgeriesForm = ref([
 	{ procedure_name: '', date: '', surgeon: '', notes: '' }
-]);
+])
 
 const addSurgery = () => {
   surgeriesForm.value.push({ pet_id: '', procedure_name: '', date: '', surgeon: '', notes: '' });
-};
+}
 
 const deleteSurgery = async (index) => {
   if (surgeriesForm.value.length === 1) {
-		const surgeryId = surgeriesForm.value[index].id;
-    
+    const surgeryId = surgeriesForm.value[index].id;
+
     // Clear the form
     surgeriesForm.value[index] = { procedure_name: '', date: '', surgeon: '', notes: '' };
 
     // Send the id to the backend
     await axios.delete(`/pets/${pet.id}/surgeries/${surgeryId}`);
 
-    toast.success('Surgical History successfully deleted!', {"position": "bottom-right"});
+    toast.success('Surgical History successfully deleted!');
   } else {
-    try {
-      const surgery = surgeriesForm.value[index];
-      await axios.delete(`/pets/${pet.id}/surgeries/${surgery.id}`);
-      surgeriesForm.value.splice(index, 1);
-      toast.success('Surgical History successfully deleted!', {
-        "position": "bottom-right",
-      });
-    } catch (error) {
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
+    const surgery = surgeriesForm.value[index];
+    await axios.delete(`/pets/${pet.id}/surgeries/${surgery.id}`);
+    surgeriesForm.value.splice(index, 1);
+    toast.success('Surgical History successfully deleted!');
   }
-};
+}
 
 const storeSurgery = async () => {
   isSubmitting.value = true;
 
   let submitData = { surgeries: surgeriesForm.value };
 
-  submitData.surgeries.forEach(surgery => {
+  submitData.surgeries.forEach((surgery) => {
     surgery.pet_id = pet.id;
     if (!surgery.id) {
       surgery.id = null;
@@ -78,78 +69,36 @@ const storeSurgery = async () => {
     }
   });
 
-  try {
-    const response = await axios.post(`/pets/${pet.id}/surgeries`, submitData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  const response = await axios.post(`/pets/${pet.id}/surgeries`, submitData, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-    toast.success(response.data.message, {
-      "position": "bottom-right",
-    });
+  toast.success(response.data.message);
 
-    errors.value = {};
+  errors.value = {};
 
-    // Update the form with the returned vaccinations
-    if (response.data.surgeries && response.data.surgeries.length > 0) {
-      response.data.surgeries.forEach(newSurgery => {
-        const index = surgeriesForm.value.findIndex(v => v.id === null);
-        if (index !== -1) {
-          // Replace temporary vaccination with real one
-          surgeriesForm.value.splice(index, 1, newSurgery);
-        }
-      });
-    }
-
-  } catch (error) {
-    if (error.response.status === 422) {
-      errors.value = error.response.data.errors;
-
-      // console.log('errors.value', errors.value);
-      // console.log('error.response.data.errors', error.response.data.errors);
-
-      for (let field in errors.value) {
-        let fieldErrors = errors.value[field];
-        if (Array.isArray(fieldErrors)) {
-          fieldErrors.forEach(error => {
-            toast.error(error, {
-              "position": "bottom-right",
-            });
-          });
-        } else if (typeof fieldErrors === 'string') {
-          toast.error(fieldErrors, {
-            "position": "bottom-right",
-          });
-        }
+  // Update the form with the returned surgeries
+  if (response.data.surgeries && response.data.surgeries.length > 0) {
+    response.data.surgeries.forEach((newSurgery) => {
+      const index = surgeriesForm.value.findIndex((v) => v.id === null);
+      if (index !== -1) {
+        // Replace temporary surgery with real one
+        surgeriesForm.value.splice(index, 1, newSurgery);
       }
-    } else {
-      // Handle other types of errors
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
-  } finally {
-    isSubmitting.value = false;
+    });
   }
-};
+
+  isSubmitting.value = false;
+}
 
 const fetchSurgeries = async () => {
-  try {
-    const response = await axios.get(`/pets/${pet.id}/surgeries`);
-    // console.log(response.data);
-    surgeriesForm.value = response.data;
+  const response = await axios.get(`/pets/${pet.id}/surgeries`);
+  surgeriesForm.value = response.data;
 
-		if (surgeriesForm.value.length === 0) {
-      surgeriesForm.value.push({ procedure_name: '', date: '', surgeon: '', notes: '' });
-    }
-
-  } catch (error) {
-    console.error(error.response.data.message);
-    toast.error(error.response.data.message, {
-      "position": "bottom-right",
-    });
+  if (surgeriesForm.value.length === 0) {
+    surgeriesForm.value.push({ procedure_name: '', date: '', surgeon: '', notes: '' });
   }
 }
 </script>

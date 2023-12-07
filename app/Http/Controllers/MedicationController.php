@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MedicationRequest;
+use App\Http\Requests\Medication\MedicationRequest;
 use App\Services\MedicationService;
 use Illuminate\Http\Request;
 

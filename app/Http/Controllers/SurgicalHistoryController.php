@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SurgicalHistoryRequest;
+use App\Http\Requests\Surgical\SurgicalHistoryRequest;
 use App\Services\SurgicalHistoryService;
 
 class SurgicalHistoryController extends Controller

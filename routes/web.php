@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SurgicalHistoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -10,6 +11,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\VaccinationController;
 use App\Http\Controllers\MedicalHistoryController;
+use App\Http\Controllers\MedicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +72,16 @@ Route::middleware([
     Route::get('/pets/{pet}/histories', [MedicalHistoryController::class, 'fetchHistories'])->name('pets.histories.fetch');
     Route::post('/pets/{pet}/histories', [MedicalHistoryController::class, 'storeHistory'])->name('pets.histories.store');
     Route::delete('/pets/{pet}/histories/{history}', [MedicalHistoryController::class, 'destroyHistory'])->name('pets.histories.delete');
+
+    // Medications
+    Route::get('/pets/{pet}/medications', [MedicationController::class, 'fetchMedications'])->name('pets.medications.fetch');
+    Route::post('/pets/{pet}/medications', [MedicationController::class, 'storeMedication'])->name('pets.medications.store');
+    Route::delete('/pets/{pet}/medications/{medication}', [MedicationController::class, 'destroyMedication'])->name('pets.medications.delete');
+
+    // Surgical History
+    Route::get('/pets/{pet}/surgeries', [SurgicalHistoryController::class, 'fetchSurgeries'])->name('pets.surgeries.fetch');
+    Route::post('/pets/{pet}/surgeries', [SurgicalHistoryController::class, 'storeSurgery'])->name('pets.surgeries.store');
+    Route::delete('/pets/{pet}/surgeries/{surgery}', [SurgicalHistoryController::class, 'destroySurgery'])->name('pets.surgeries.delete');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 
