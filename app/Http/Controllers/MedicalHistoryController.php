@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MedicalHistoryRequest;
+use App\Http\Requests\History\MedicalHistoryRequest;
 use App\Services\MedicalHistoryService;
 use Illuminate\Http\Request;
 

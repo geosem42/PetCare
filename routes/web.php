@@ -9,6 +9,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\VaccinationController;
+use App\Http\Controllers\MedicalHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +65,11 @@ Route::middleware([
     Route::post('/pets/{pet}/vaccinations', [VaccinationController::class, 'storeVaccination'])->name('pets.vaccinations.store');
     Route::delete('/pets/{pet}/vaccinations/{vaccination}', [VaccinationController::class, 'destroyVaccination'])->name('pets.vaccinations.delete');
     Route::get('/pets/{pet}/vaccinations', [VaccinationController::class, 'fetchVaccinations'])->name('pets.vaccinations.fetch');
+
+    // Medical History
+    Route::get('/pets/{pet}/histories', [MedicalHistoryController::class, 'fetchHistories'])->name('pets.histories.fetch');
+    Route::post('/pets/{pet}/histories', [MedicalHistoryController::class, 'storeHistory'])->name('pets.histories.store');
+    Route::delete('/pets/{pet}/histories/{history}', [MedicalHistoryController::class, 'destroyHistory'])->name('pets.histories.delete');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 

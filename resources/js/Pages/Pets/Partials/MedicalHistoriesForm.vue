@@ -35,25 +35,19 @@ const addHistory = () => {
 const deleteHistory = async (index) => {
   if (historiesForm.value.length === 1) {
     const historyId = historiesForm.value[index].id;
+
     // Clear the form
     historiesForm.value[index] = { condition: '', diagnosis_date: '', treatment: '', notes: '' };
+
     // Send the id to the backend
     await axios.delete(`/pets/${pet.id}/histories/${historyId}`);
-    toast.success('Medical History successfully deleted!', { "position": "bottom-right" });
+
+    toast.success('Medical History successfully deleted!');
   } else {
-    try {
-      const history = historiesForm.value[index];
-      await axios.delete(`/pets/${pet.id}/histories/${history.id}`);
-      historiesForm.value.splice(index, 1);
-      toast.success('Medical History successfully deleted!', {
-        "position": "bottom-right",
-      });
-    } catch (error) {
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
+    const history = historiesForm.value[index];
+    await axios.delete(`/pets/${pet.id}/histories/${history.id}`);
+    historiesForm.value.splice(index, 1);
+    toast.success('Medical History successfully deleted!');
   }
 };
 
@@ -62,93 +56,53 @@ const storeHistory = async () => {
 
   let submitData = { histories: historiesForm.value };
 
-  submitData.histories.forEach(history => {
+  submitData.histories.forEach((history) => {
     history.pet_id = pet.id;
     if (!history.id) {
       history.id = null;
     }
     if (history.diagnosis_date) {
-      history.diagnosis_date = moment(history.diagnosis_date).format('YYYY-MM-DD HH:mm:ss');
+      history.diagnosis_date = moment(history.diagnosis_date).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
     } else {
       delete history.diagnosis_date;
     }
   });
 
-  try {
-    const response = await axios.post(`/pets/${pet.id}/histories`, submitData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  const response = await axios.post(`/pets/${pet.id}/histories`, submitData, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-    toast.success(response.data.message, {
-      "position": "bottom-right",
-    });
+  toast.success(response.data.message);
 
-    errors.value = {};
+  errors.value = {};
 
-    // Update the form with the returned vaccinations
-    if (response.data.histories && response.data.histories.length > 0) {
-      response.data.histories.forEach(newHistory => {
-        const index = historiesForm.value.findIndex(v => v.id === null);
-        if (index !== -1) {
-          // Replace temporary vaccination with real one
-          historiesForm.value.splice(index, 1, newHistory);
-        }
-      });
-    }
-
-  } catch (error) {
-    if (error.response.status === 422) {
-      errors.value = error.response.data.errors;
-
-      // console.log('errors.value', errors.value);
-      // console.log('error.response.data.errors', error.response.data.errors);
-
-      for (let field in errors.value) {
-        let fieldErrors = errors.value[field];
-        if (Array.isArray(fieldErrors)) {
-          fieldErrors.forEach(error => {
-            toast.error(error, {
-              "position": "bottom-right",
-            });
-          });
-        } else if (typeof fieldErrors === 'string') {
-          toast.error(fieldErrors, {
-            "position": "bottom-right",
-          });
-        }
+  // Update the form with the returned histories
+  if (response.data.histories && response.data.histories.length > 0) {
+    response.data.histories.forEach((newHistory) => {
+      const index = historiesForm.value.findIndex((v) => v.id === null);
+      if (index !== -1) {
+        // Replace temporary history with real one
+        historiesForm.value.splice(index, 1, newHistory);
       }
-    } else {
-      // Handle other types of errors
-      console.error(error.response.data.message);
-      toast.error(error.response.data.message, {
-        "position": "bottom-right",
-      });
-    }
-  } finally {
-    isSubmitting.value = false;
+    });
   }
+
+  isSubmitting.value = false;
 };
 
 
 const fetchHistories = async () => {
-  try {
-    const response = await axios.get(`/pets/${pet.id}/histories`);
-    // console.log(response.data);
-    historiesForm.value = response.data;
+  const response = await axios.get(`/pets/${pet.id}/histories`);
+  historiesForm.value = response.data;
 
-    if (historiesForm.value.length === 0) {
-      historiesForm.value.push({ condition: '', diagnosis_date: '', treatment: '', notes: '' });
-    }
-
-  } catch (error) {
-    console.error(error.response.data.message);
-    toast.error(error.response.data.message, {
-      "position": "bottom-right",
-    });
+  if (historiesForm.value.length === 0) {
+    historiesForm.value.push({ condition: '', diagnosis_date: '', treatment: '', notes: '' });
   }
-}
+};
 </script>
 
 <template>
