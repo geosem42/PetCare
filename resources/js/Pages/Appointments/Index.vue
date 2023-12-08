@@ -281,7 +281,7 @@ onMounted(async () => {
 								<DialogTitle as="h3" class="flex justify-between items-center text-lg font-medium leading-6 text-gray-900">
 									<div>Edit Event</div>
 									<button @click="deleteEvent(editForm.id)"
-											class="inline-flex items-center text-red-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+											class="inline-flex items-center text-red-700 hover:text-red-900 font-medium rounded-lg text-sm py-2.5 text-center">
 											<TrashIcon class="w-6 h-6" />
 										</button>
 								</DialogTitle>
