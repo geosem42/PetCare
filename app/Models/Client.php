@@ -39,4 +39,9 @@ class Client extends Model
 	{
 		return $this->hasMany(Pet::class);
 	}
+
+    public function appointments(): HasMany
+	{
+		return $this->hasMany(Appointment::class);
+	}
 }

@@ -90,6 +90,12 @@ Route::middleware([
     Route::delete('/pets/{pet}/gallery/{image}', [GalleryController::class, 'destroy'])->name('pets.gallery.delete');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
+    Route::post('/appointments/create', [AppointmentController::class, 'store'])->name('appointments.store');
+    Route::get('/appointments/fetchAllAppointments', [AppointmentController::class, 'fetchAllAppointments'])->name('appointments.fetchAll');
+    Route::get('/appointments/fetchAllClients', [AppointmentController::class, 'fetchAllClients'])->name('appointments.fetchAllClients');
+    Route::get('/appointments/{id}', [AppointmentController::class, 'edit'])->name('appointments.edit');
+    Route::put('/appointments/{appointment}', [AppointmentController::class, 'update'])->name('appointments.update');
+    Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
 
     Route::get('/inventory', [ItemController::class, 'index'])->name('inventory');
 });

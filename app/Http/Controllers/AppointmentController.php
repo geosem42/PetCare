@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Appointment;
-use App\Models\Client;
 use App\Services\AppointmentService;
 use App\Http\Requests\Appointment\AppointmentRequest;
 
@@ -23,10 +21,10 @@ class AppointmentController extends Controller
         return Inertia::render('Appointments/Index');
     }
 
-    public function create(AppointmentRequest $request)
+    public function store(AppointmentRequest $request)
     {
         $validatedData = $request->validated();
-        $this->appointmentService->createAppointment($validatedData);
+        $this->appointmentService->storeAppointment($validatedData);
 
         return response()->json([
             'message' => 'Event created successfully',
@@ -34,37 +32,32 @@ class AppointmentController extends Controller
     }    
 
     public function fetchAllAppointments() {
-        $appointments = $this->appointmentService->getAllAppointments();
+        $appointments = $this->appointmentService->fetchAllAppointments();
 
-        return response()->json([
-            'appointments' => $appointments,
-            'message' => 'Appointments fetched successfully',
-        ], 201);
+        return response()->json($appointments, 201);
     }
 
-    public function fetchAllUsers()
+    public function fetchAllClients()
     {
-        $users = $this->appointmentService->getAllUsers();
+        $users = $this->appointmentService->fetchAllClients();
 
         return response()->json($users);
     }
 
-    public function searchUsers(Request $request)
+    public function searchClients(Request $request)
     {
         $query = $request->input('query');
         $limit = $request->input('limit', 10);
-        $users = $this->appointmentService->searchUsers($query, $limit);
+        $users = $this->appointmentService->searchClients($query, $limit);
 
         return response()->json($users);
     }
 
     public function edit($id)
     {
-        $appointment = $this->appointmentService->getAppointmentById($id);
+        $appointment = $this->appointmentService->fetchAppointmentById($id);
 
-        return response()->json([
-            'appointment' => $appointment
-        ], 200);
+        return response()->json($appointment, 200);
     }
 
     public function update(AppointmentRequest $request, $id)
@@ -75,7 +68,7 @@ class AppointmentController extends Controller
         return response()->json([
             'message' => 'Appointment updated successfully',
         ], 200);
-    }    
+    }
 
     public function destroy($id)
     {
