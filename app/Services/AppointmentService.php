@@ -19,7 +19,7 @@ class AppointmentService
 
     public function fetchAppointmentById($id)
     {
-        return Appointment::find($id);
+        return Appointment::with('client')->find($id);
     }
 
     public function updateAppointment($id, $data)

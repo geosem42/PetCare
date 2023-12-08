@@ -88,7 +88,7 @@ class PetService
 
     public function search($keywords)
     {
-        return Pet::where('name', 'like', '%' . $keywords . '%')->with('user', 'species', 'breed')->get();
+        return Pet::where('name', 'like', '%' . $keywords . '%')->with('client', 'species', 'breed')->get();
     }
 
     public function searchSpecies($name)

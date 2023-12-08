@@ -93,6 +93,7 @@ Route::middleware([
     Route::post('/appointments/create', [AppointmentController::class, 'store'])->name('appointments.store');
     Route::get('/appointments/fetchAllAppointments', [AppointmentController::class, 'fetchAllAppointments'])->name('appointments.fetchAll');
     Route::get('/appointments/fetchAllClients', [AppointmentController::class, 'fetchAllClients'])->name('appointments.fetchAllClients');
+    Route::get('/appointments/searchClients', [AppointmentController::class, 'searchClients'])->name('appointments.searchClients');
     Route::get('/appointments/{id}', [AppointmentController::class, 'edit'])->name('appointments.edit');
     Route::put('/appointments/{appointment}', [AppointmentController::class, 'update'])->name('appointments.update');
     Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');

@@ -9,6 +9,7 @@ import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import { useToast } from "vue-toastification"
 import Swal from "sweetalert2";
+import { TrashIcon } from '@heroicons/vue/24/outline'
 import {
 	TransitionRoot,
 	TransitionChild,
@@ -133,6 +134,7 @@ const openEditModal = async (id) => {
 	editForm.start_time = response.data.start_time;
 	editForm.end_time = response.data.end_time;
 	editForm.description = response.data.description;
+	selectedClient.value = response.data.client;
 	isEditModalOpen.value = true;
 };
 
@@ -147,9 +149,21 @@ const submitEditForm = async () => {
 
 	await axios.put(`/appointments/${editForm.id}`, formData);
 	fetchAllAppointments();
-	closeModal();
+	closeEditModal();
 	resetForm();
 	toast.success("Appointment updated successfully!");
+};
+
+const searchClients = async (query) => {
+	const response = await axios.get('/appointments/searchClients', { params: { query } });
+	matchingClients.value = response.data;
+};
+
+const deleteEvent = async (id) => {
+	await axios.delete(`/appointments/${id}`);
+	fetchAllAppointments();
+	closeEditModal();
+	toast.success("Appointment deleted successfully!");
 };
 
 
@@ -202,30 +216,25 @@ onMounted(async () => {
 										<div class="col-span-2">
 											<label for="client"
 												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Client</label>
-											<VueMultiselect v-model="selectedClient" :options="matchingClients"
-												:multiple="false" :clear-on-select="true" placeholder="Type to search"
-												label="name" track-by="id" @search-change="fetchAllClients"
-												@input="setClientId">
+											<VueMultiselect v-model="selectedClient" :options="matchingClients" :multiple="false"
+												:clear-on-select="true" placeholder="Type to search" label="name" track-by="id"
+												@search-change="searchClients" @input="setClientId">
 												<template #noUser>
 													Oops! No users found. Try a different search query.
 												</template>
 											</VueMultiselect>
 										</div>
 										<div class="col-span-2 sm:col-span-1">
-											<label for="start_time"
-												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Start
+											<label for="start_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Start
 												Date</label>
-											<input v-model="createForm.start_time" type="datetime-local" name="start_time"
-												id="start_time"
+											<input v-model="createForm.start_time" type="datetime-local" name="start_time" id="start_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
 												required="">
 										</div>
 										<div class="col-span-2 sm:col-span-1">
-											<label for="end_time"
-												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">End
+											<label for="end_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">End
 												Date</label>
-											<input v-model="createForm.end_time" type="datetime-local" name="end_time"
-												id="end_time"
+											<input v-model="createForm.end_time" type="datetime-local" name="end_time" id="end_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
 												required="">
 										</div>
@@ -269,8 +278,12 @@ onMounted(async () => {
 							leave-to="opacity-0 scale-95">
 							<DialogPanel
 								class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-								<DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
-									Edit Event
+								<DialogTitle as="h3" class="flex justify-between items-center text-lg font-medium leading-6 text-gray-900">
+									<div>Edit Event</div>
+									<button @click="deleteEvent(editForm.id)"
+											class="inline-flex items-center text-red-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+											<TrashIcon class="w-6 h-6" />
+										</button>
 								</DialogTitle>
 								<form @submit.prevent="submitEditForm" class="py-5">
 									<div class="grid gap-4 mb-4 grid-cols-2">
@@ -284,30 +297,25 @@ onMounted(async () => {
 										<div class="col-span-2">
 											<label for="client"
 												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Client</label>
-											<VueMultiselect v-model="selectedClient" :options="matchingClients"
-												:multiple="false" :clear-on-select="true" placeholder="Type to search"
-												label="name" track-by="id" @search-change="fetchAllClients"
-												@input="setClientId">
+											<VueMultiselect v-model="selectedClient" :options="matchingClients" :multiple="false"
+												:clear-on-select="true" placeholder="Type to search" label="name" track-by="id"
+												@search-change="searchClients" @input="setClientId">
 												<template #noUser>
 													Oops! No users found. Try a different search query.
 												</template>
 											</VueMultiselect>
 										</div>
 										<div class="col-span-2 sm:col-span-1">
-											<label for="start_time"
-												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Start
+											<label for="start_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Start
 												Date</label>
-											<input v-model="editForm.start_time" type="datetime-local" name="start_time"
-												id="start_time"
+											<input v-model="editForm.start_time" type="datetime-local" name="start_time" id="start_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
 												required="">
 										</div>
 										<div class="col-span-2 sm:col-span-1">
-											<label for="end_time"
-												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">End
+											<label for="end_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">End
 												Date</label>
-											<input v-model="editForm.end_time" type="datetime-local" name="end_time"
-												id="end_time"
+											<input v-model="editForm.end_time" type="datetime-local" name="end_time" id="end_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
 												required="">
 										</div>
@@ -319,16 +327,18 @@ onMounted(async () => {
 												placeholder="Write event description here"></textarea>
 										</div>
 									</div>
-									<button type="submit"
-										class="text-white inline-flex items-center bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
-										<svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-											xmlns="http://www.w3.org/2000/svg">
-											<path fill-rule="evenodd"
-												d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-												clip-rule="evenodd"></path>
-										</svg>
-										Add Event
-									</button>
+									<div class="flex justify-between">
+										<button type="submit"
+											class="text-white inline-flex items-center bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
+											<svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+												xmlns="http://www.w3.org/2000/svg">
+												<path fill-rule="evenodd"
+													d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+													clip-rule="evenodd"></path>
+											</svg>
+											Update Event
+										</button>
+									</div>
 								</form>
 							</DialogPanel>
 						</TransitionChild>
@@ -337,4 +347,5 @@ onMounted(async () => {
 			</Dialog>
 		</TransitionRoot>
 
-</AppLayout></template>
+	</AppLayout>
+</template>
