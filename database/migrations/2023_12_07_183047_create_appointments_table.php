@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('client_id');
             $table->string('title', 255);
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->timestamps();

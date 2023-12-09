@@ -12,30 +12,26 @@ export const validateForm = (form) => {
     }
 
     // Validate title (trimming whitespace)
-    if (!form.title || !form.title.trim()) {
+    if (!form.title.trim()) {
         errors.value.title = 'This field is required';
-    } else if (form.title.length > 255) {
-        errors.value.title = 'This field must be less than 256 characters';
+    } else {
+        delete errors.value.title;
     }
 
     // Validate client_id (checking if it's an integer)
-    if (!form.selectedClient) {
-      errors.value.client_id = 'This field is required';
-    } else if (typeof form.selectedClient.id !== 'number') {
+    if (!form.client_id) {
+        errors.value.client_id = 'This field is required';
+    } else if (typeof form.client_id !== 'number') {
         errors.value.client_id = 'This field must be an integer';
-    }
-  
-
-    // Validate description (trimming whitespace if it's a string)
-    if (form.description && typeof form.description === 'string' && !form.description.trim()) {
-        errors.value.description = 'This field cannot be only spaces';
-    } else if (form.description && typeof form.description !== 'string') {
-        errors.value.description = 'This field must be a string';
+    } else {
+        delete errors.value.client_id;
     }
 
     // Validate start_time (checking if it's a valid date)
     if (!form.start_time || isNaN(Date.parse(form.start_time))) {
         errors.value.start_time = 'This field is required';
+    } else {
+        delete errors.value.start_time;
     }
 
     // Validate end_time (checking if it's a valid date and after start_time)
@@ -43,6 +39,15 @@ export const validateForm = (form) => {
         errors.value.end_time = 'This field is required';
     } else if (Date.parse(form.end_time) <= Date.parse(form.start_time)) {
         errors.value.end_time = 'This field must be a date after start date';
+    } else {
+        delete errors.value.end_time;
+    }
+
+    // Validate description (trimming whitespace if it's a string)
+    if (form.description && typeof form.description === 'string' && !form.description.trim()) {
+        errors.value.description = 'This field cannot be only spaces';
+    } else {
+        delete errors.value.description;
     }
 };
 

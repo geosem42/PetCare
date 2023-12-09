@@ -43,9 +43,9 @@ const resetForm = () => {
 }
 
 onMounted(async () => {
-	await fetchUsers('');
-	await fetchSpecies('');
-	await fetchBreeds('');
+	await fetchUsers();
+	await fetchSpecies();
+	await fetchBreeds();
 	watchFields(createForm);
 });
 
