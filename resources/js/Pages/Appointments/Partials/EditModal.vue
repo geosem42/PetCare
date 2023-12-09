@@ -9,7 +9,6 @@ import { validateForm, errors, watchFields } from '@/Validation/Appointments/Ind
 import { TrashIcon } from '@heroicons/vue/24/outline'
 
 const selectedEditClient = ref([]);
-const matchingClients = ref([]);
 const toast = useToast();
 const emit = defineEmits(['closeEditModal'])
 
@@ -18,6 +17,9 @@ const props = defineProps({
   calendarOptions: Object,
   selectedClient: Object,
   fetchAllAppointments: Function,
+  fetchAllClients: Function,
+	searchClients: Function,
+  matchingClients: Object,
   editData: Object
 })
 
@@ -55,18 +57,6 @@ watch(() => props.editData, (newVal) => {
 		selectedEditClient.value = newVal.client;
 	}
 }, { immediate: true });
-
-
-
-const fetchAllClients = async () => {
-	const response = await axios.get('/appointments/fetchAllClients');
-	matchingClients.value = response.data;
-};
-
-const searchClients = async (query) => {
-	const response = await axios.get('/appointments/searchClients', { params: { query } });
-	matchingClients.value = response.data;
-};
 
 const submitEditForm = async () => {
 	validateForm(editForm);
@@ -115,7 +105,7 @@ watch(selectedEditClient, () => {
 });
 
 onMounted(async () => {
-	await fetchAllClients();
+	await props.fetchAllClients();
 	watchFields(editForm);
 });
 </script>
@@ -156,9 +146,9 @@ onMounted(async () => {
                   <div class="col-span-2">
                     <label for="client"
                       class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Client</label>
-                    <VueMultiselect v-model="selectedEditClient" :options="matchingClients" :multiple="false"
+                    <VueMultiselect v-model="selectedEditClient" :options="props.matchingClients" :multiple="false"
                       :clear-on-select="true" placeholder="Type to search" label="name" track-by="id"
-                      @search-change="searchClients" @input="setClientId" :class="{ 'error': errors.client_id }">
+                      @search-change="props.searchClients" @input="setClientId" :class="{ 'error': errors.client_id }">
                       <template #noUser>
                         Oops! No users found. Try a different search query.
                       </template>

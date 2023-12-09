@@ -12,6 +12,7 @@ const selectedCreateClient = ref([])
 const selectedEditClient = ref([])
 const isCreateModalOpen = ref(false)
 const isEditModalOpen = ref(false)
+const matchingClients = ref([]);
 const editData = ref({})
 
 const openCreateModal = () => {
@@ -75,6 +76,16 @@ const fetchAllAppointments = async () => {
 	calendarOptions.value.events = events;
 };
 
+const fetchAllClients = async () => {
+	const response = await axios.get('/appointments/fetchAllClients');
+	matchingClients.value = response.data;
+};
+
+const searchClients = async (query) => {
+	const response = await axios.get('/appointments/searchClients', { params: { query } });
+	matchingClients.value = response.data;
+};
+
 onMounted(async () => {
 	await fetchAllAppointments();
 });
@@ -96,13 +107,19 @@ onMounted(async () => {
 								@closeCreateModal="closeCreateModal"
 								:calendarOptions="calendarOptions"
 								:selectedClient="selectedCreateClient"
-								:fetchAllAppointments="fetchAllAppointments" />
+								:fetchAllAppointments="fetchAllAppointments"
+								:fetchAllClients="fetchAllClients"
+								:searchClients="searchClients"
+								:matchingClients="matchingClients" />
 		
 		<EditModal :isEditModalOpen="isEditModalOpen" 
 							@closeEditModal="closeEditModal" 
 							:calendarOptions="calendarOptions" 
 							:selectedClient="selectedEditClient" 
 							:fetchAllAppointments="fetchAllAppointments"
+							:fetchAllClients="fetchAllClients"
+							:searchClients="searchClients"
+							:matchingClients="matchingClients"
 							:editData="editData" />
 
 
