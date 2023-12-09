@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, watch } from 'vue'
 import { useForm } from "@inertiajs/vue3"
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -10,6 +10,7 @@ import 'vue-multiselect/dist/vue-multiselect.css'
 import { useToast } from "vue-toastification"
 import Swal from "sweetalert2";
 import { TrashIcon } from '@heroicons/vue/24/outline'
+import { validateForm, errors, watchFields } from '@/Validation/Appointments/Index'
 import {
 	TransitionRoot,
 	TransitionChild,
@@ -70,6 +71,7 @@ const isEditModalOpen = ref(false)
 
 const closeModal = () => {
 	isModalOpen.value = false;
+	errors.value = {}
 };
 
 const openModal = () => {
@@ -78,9 +80,18 @@ const openModal = () => {
 
 const closeEditModal = () => {
 	isEditModalOpen.value = false;
+	errors.value = {}
 };
 
 const submitAppointmentForm = async () => {
+	validateForm(createForm);
+
+	// If there are any errors, don't submit the form
+	if (Object.keys(errors.value).length > 0) {
+		toast.error("Please correct the errors in the form.");
+		return;
+	}
+
 	const formData = {
 		title: createForm.title,
 		client_id: selectedClient.value.id,
@@ -139,6 +150,14 @@ const openEditModal = async (id) => {
 };
 
 const submitEditForm = async () => {
+	validateForm(editForm);
+
+	// If there are any errors, don't submit the form
+	if (Object.keys(errors.value).length > 0) {
+		toast.error("Please correct the errors in the form.");
+		return;
+	}
+
 	const formData = {
 		title: editForm.title,
 		client_id: selectedClient.value.id,
@@ -166,13 +185,23 @@ const deleteEvent = async (id) => {
 	toast.success("Appointment deleted successfully!");
 };
 
+watch(() => selectedClient.value, (newVal, oldVal) => {
+    if (newVal) {
+        editForm.client_id = newVal.id;
+				createForm.client_id = newVal.id;
+    } else {
+        editForm.client_id = '';
+				editForm.client_id = '';
+    }
+});
+
 
 onMounted(async () => {
 	await fetchAllAppointments();
 	await fetchAllClients();
+	watchFields(createForm);
+	watchFields(editForm);
 });
-
-
 </script>
 
 <template>
@@ -211,32 +240,46 @@ onMounted(async () => {
 												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Title</label>
 											<input v-model="createForm.title" type="text" name="title" id="title"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-												placeholder="Type event title" required="">
+												:class="errors.title ? 'border-red-500' : 'border-gray-300'"
+												placeholder="Type event title">
+												<div v-if="errors.title" class="text-xs text-red-500 mt-1">
+													{{ errors.title }}
+												</div>
 										</div>
 										<div class="col-span-2">
 											<label for="client"
 												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Client</label>
 											<VueMultiselect v-model="selectedClient" :options="matchingClients" :multiple="false"
 												:clear-on-select="true" placeholder="Type to search" label="name" track-by="id"
-												@search-change="searchClients" @input="setClientId">
+												@search-change="searchClients" @input="setClientId"
+												:class="{ 'error': errors.client_id }">
 												<template #noUser>
 													Oops! No users found. Try a different search query.
 												</template>
 											</VueMultiselect>
+											<div v-if="errors.title" class="text-xs text-red-500 mt-1">
+													{{ errors.title }}
+												</div>
 										</div>
 										<div class="col-span-2 sm:col-span-1">
 											<label for="start_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Start
 												Date</label>
 											<input v-model="createForm.start_time" type="datetime-local" name="start_time" id="start_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-												required="">
+												:class="errors.start_time ? 'border-red-500' : 'border-gray-300'">
+											<div v-if="errors.start_time" class="text-xs text-red-500 mt-1">
+												{{ errors.start_time }}
+											</div>
 										</div>
 										<div class="col-span-2 sm:col-span-1">
 											<label for="end_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">End
 												Date</label>
 											<input v-model="createForm.end_time" type="datetime-local" name="end_time" id="end_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-												required="">
+												:class="errors.end_time ? 'border-red-500' : 'border-gray-300'">
+											<div v-if="errors.end_time" class="text-xs text-red-500 mt-1">
+												{{ errors.end_time }}
+											</div>
 										</div>
 										<div class="col-span-2">
 											<label for="description"
@@ -292,32 +335,46 @@ onMounted(async () => {
 												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Title</label>
 											<input v-model="editForm.title" type="text" name="title" id="title"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-												placeholder="Type event title" required="">
+												:class="errors.title ? 'border-red-500' : 'border-gray-300'"
+												placeholder="Type event title">
+												<div v-if="errors.title" class="text-sm text-red-500 mt-1">
+													{{ errors.title }}
+												</div>
 										</div>
 										<div class="col-span-2">
 											<label for="client"
 												class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Client</label>
 											<VueMultiselect v-model="selectedClient" :options="matchingClients" :multiple="false"
 												:clear-on-select="true" placeholder="Type to search" label="name" track-by="id"
-												@search-change="searchClients" @input="setClientId">
+												@search-change="searchClients" @input="setClientId"
+												:class="{ 'error': errors.client_id }">
 												<template #noUser>
 													Oops! No users found. Try a different search query.
 												</template>
 											</VueMultiselect>
+											<div v-if="errors.client_id" class="text-sm text-red-500 mt-1">
+													{{ errors.client_id }}
+											</div>
 										</div>
 										<div class="col-span-2 sm:col-span-1">
 											<label for="start_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">Start
 												Date</label>
 											<input v-model="editForm.start_time" type="datetime-local" name="start_time" id="start_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-												required="">
+												:class="errors.start_time ? 'border-red-500' : 'border-gray-300'">
+											<div v-if="errors.start_time" class="text-sm text-red-500 mt-1">
+													{{ errors.start_time }}
+											</div>
 										</div>
 										<div class="col-span-2 sm:col-span-1">
 											<label for="end_time" class="block mb-2 text-xs font-medium text-gray-500 dark:text-white">End
 												Date</label>
 											<input v-model="editForm.end_time" type="datetime-local" name="end_time" id="end_time"
 												class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
-												required="">
+												:class="errors.end_time ? 'border-red-500' : 'border-gray-300'">
+											<div v-if="errors.end_time" class="text-sm text-red-500 mt-1">
+													{{ errors.end_time }}
+											</div>
 										</div>
 										<div class="col-span-2">
 											<label for="description"
@@ -349,3 +406,13 @@ onMounted(async () => {
 
 	</AppLayout>
 </template>
+
+<style scoped>
+.multiselect>>>.multiselect__tags {
+	border: 1px solid #D1D5DBFF;
+}
+
+.multiselect.error>>>.multiselect__tags {
+	border: 1px solid #f05252;
+}
+</style>
