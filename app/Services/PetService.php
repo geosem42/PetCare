@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Breed;
 use App\Models\Pet;
 use App\Models\Species;
-use App\Models\User;
 Use App\Models\Client;
 
 class PetService
