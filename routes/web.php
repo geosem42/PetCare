@@ -36,6 +36,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Clients
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
     Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
     Route::post('/clients/store', [ClientController::class, 'store'])->name('clients.store');
@@ -47,6 +48,7 @@ Route::middleware([
     Route::put('/clients/{id}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
     
+    // Pets
     Route::get('/pets', [PetController::class, 'index'])->name('pets');
     Route::get('/pets/create', [PetController::class, 'create'])->name('pets.create');
     Route::post('/pets/store', [PetController::class, 'store'])->name('pets.store');
@@ -98,5 +100,15 @@ Route::middleware([
     Route::put('/appointments/{appointment}', [AppointmentController::class, 'update'])->name('appointments.update');
     Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
 
-    Route::get('/inventory', [ItemController::class, 'index'])->name('inventory');
+    // Items (Inventory)
+    Route::get('/items', [ItemController::class, 'index'])->name('items');
+    Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+    Route::post('/items/store', [ItemController::class, 'store'])->name('items.store');
+    Route::get('/items/fetchAllItems', [ItemController::class, 'fetchAllItems'])->name('items.fetchAll');
+    Route::post('/items/search', [ItemController::class, 'search'])->name('items.search');
+    Route::delete('/items/bulk-delete/selected', [ItemController::class, 'bulkDelete'])->name('items.bulkDelete');
+    Route::get('/items/{slug}/show', [ItemController::class, 'show'])->name('items.show');
+    Route::get('/items/{slug}/edit', [ItemController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
+    Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
 });

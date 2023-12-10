@@ -8,8 +8,7 @@ class ClientService
 {
   public function storeClient($data)
   {
-    $user = Client::create($data);
-    return $user;
+    return Client::create($data);
   }
 
   public function updateClient($data, $id)
@@ -51,13 +50,11 @@ class ClientService
 
   public function searchClients($keywords)
   {
-    $clients = Client::where('name', 'like', '%' . $keywords . '%')->get();
-    return $clients;
+    return Client::where('name', 'like', '%' . $keywords . '%')->get();
   }
 
   public function findClientBySlug($slug)
   {
-    $id = (int) substr($slug, strrpos($slug, '-') + 1);
-    return Client::with('pets.species', 'pets.breed')->findOrFail($id); // 
+    return Client::where('slug', $slug)->firstOrFail();
   }
 }

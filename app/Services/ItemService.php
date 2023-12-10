@@ -39,9 +39,10 @@ class ItemService
       'links' => $items->links(),
       'count' => Item::all()->count(),
       'meta' => [
-        'current_page' => $items->currentPage(),
-        'last_page' => $items->lastPage(),
-        'total_items' => $items->total()
+        'currentPage' => $items->currentPage(),
+        'lastPage' => $items->lastPage(),
+        'totalItems' => $items->total(),
+        'perPage' => $items->perPage(),
       ],
     ];
   }
@@ -54,7 +55,9 @@ class ItemService
 
   public function findItemBySlug($slug)
   {
-    $id = (int) substr($slug, strrpos($slug, '-') + 1);
-    return Item::findOrFail($id);
+    /* $id = (int) substr($slug, strrpos($slug, '-') + 1);
+    \Log::info('Finding item by id: '. $id);
+    return Item::findOrFail($id); */
+    return Item::where('slug', $slug)->firstOrFail();
   }
 }
