@@ -65,3 +65,8 @@ php artisan db:seed --class=ItemsSeeder
 
 # Screenshots
 
+![Pets table](https://i.imgur.com/GAqDR3K.png)
+
+![Edit Pet](https://i.imgur.com/s0aeu2Q.jpeg)
+
+![Calendar](https://i.imgur.com/H1uGqa3.jpeg)
