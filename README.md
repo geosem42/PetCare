@@ -62,3 +62,6 @@ php artisan db:seed --class=PetsSeeder
 
 php artisan db:seed --class=ItemsSeeder
 ````
+
+# Screenshots
+
