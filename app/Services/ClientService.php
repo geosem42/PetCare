@@ -55,6 +55,6 @@ class ClientService
 
   public function findClientBySlug($slug)
   {
-    return Client::where('slug', $slug)->firstOrFail();
+    return Client::where('slug', $slug)->with(['pets.species', 'pets.breed'])->firstOrFail();
   }
 }
