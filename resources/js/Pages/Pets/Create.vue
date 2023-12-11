@@ -42,11 +42,63 @@ const resetForm = () => {
 	selectedFile.value = null;
 }
 
+const fetchAllClients = async () => {
+  const response = await axios.get('/pets/fetchAllClients');
+  matchingUsers.value = response.data.slice(0, 10);
+}
+
+const fetchAllSpecies = async () => {
+  const response = await axios.get('/pets/fetchAllSpecies');
+  matchingSpecies.value = response.data;
+  await nextTick();
+}
+
+const fetchAllBreeds = async () => {
+  loadingBreeds.value = true;
+  
+  const response = await axios.get(`/pets/fetchAllBreeds`);
+  
+  matchingBreeds.value = response.data;
+  await nextTick();
+
+  loadingBreeds.value = false;
+}
+
+const setUserId = () => {
+	if (selectedUser.value) {
+		errors.client_id = [];
+		createForm.client_id = selectedUser.value.id;
+	}
+};
+
+watch(selectedUser, () => {
+	if (selectedUser.value) {
+		setUserId();
+	}
+});
+watch(selectedSpecies, async() => {
+	if (selectedSpecies.value) {
+		setSpeciesId();
+		fetchBreeds(selectedSpecies.value.id);
+	} else {
+		console.log('No species selected')
+	}
+});
+
+watch(selectedBreed, () => {
+	if (selectedBreed.value) {
+		createForm.breed_id = selectedBreed.value.id;
+	}
+});
+
 onMounted(async () => {
-	await fetchUsers();
-	await fetchSpecies();
-	await fetchBreeds();
+	
+	await fetchAllClients()
+	await fetchAllSpecies()
+	await fetchAllBreeds()
+
 	watchFields(createForm);
+	errors.value = {}
 });
 
 const handleFileChange = (event) => {
@@ -106,20 +158,6 @@ const createPet = async () => {
 	isSubmitting.value = false;
 };
 
-
-const setUserId = () => {
-	if (selectedUser.value) {
-		errors.client_id = [];
-		createForm.client_id = selectedUser.value.id;
-	}
-};
-
-watch(selectedUser, () => {
-	if (selectedUser.value) {
-		setUserId();
-	}
-});
-
 const fetchSpecies = async (query) => {
 	const response = await axios.get(`/pets/species?name=${query}`);
 	const data = response.data;
@@ -145,23 +183,6 @@ const fetchBreeds = async (speciesId) => {
 
 	loadingBreeds.value = false;
 };
-
-watch(selectedSpecies, () => {
-	if (selectedSpecies.value) {
-		setSpeciesId();
-		fetchBreeds(selectedSpecies.value.id);
-	}
-});
-watch(selectedBreed, () => {
-	if (selectedBreed.value) {
-		errors.breed_id = [];
-		createForm.breed_id = selectedBreed.value.id;
-	}
-});
-
-onMounted(async () => {
-	errors.value = {}
-})
 </script>
 
 <template>

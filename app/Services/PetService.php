@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Breed;
 use App\Models\Pet;
 use App\Models\Species;
-Use App\Models\Client;
+use App\Models\Client;
 
 class PetService
 {
@@ -36,7 +36,7 @@ class PetService
 
     public function bulkDeletePets($ids)
     {
-      Pet::destroy($ids);
+        Pet::destroy($ids);
     }
 
     protected function handlePhotoUpload(Pet $pet, $photo): void
@@ -62,16 +62,16 @@ class PetService
         $pets = Pet::with('species', 'breed')->orderBy('created_at', 'DESC')->paginate($perPage, ['*'], 'page', $page);
 
         return [
-        
-        'pets' => $pets,
-        'links' => $pets->links(),
-        'count' => Pet::all()->count(),
-        'meta' => [
-            'currentPage' => $pets->currentPage(),
-            'lastPage' => $pets->lastPage(),
-            'totalItems' => $pets->total(),
-            'perPage' => $pets->perPage(),
-        ],
+
+            'pets' => $pets,
+            'links' => $pets->links(),
+            'count' => Pet::all()->count(),
+            'meta' => [
+                'currentPage' => $pets->currentPage(),
+                'lastPage' => $pets->lastPage(),
+                'totalItems' => $pets->total(),
+                'perPage' => $pets->perPage(),
+            ],
         ];
     }
 
